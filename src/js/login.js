@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.querySelector('.signin');
+  const appleButton = document.querySelector('.fa-apple');
 
-  if (loginForm) {
+
+  if (loginForm && appleButton) {
     // Parse the query parameters from the URL
     const queryParams = new URLSearchParams(window.location.search);
     const username = queryParams.get('username');
@@ -12,6 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (usernameInput) {
         usernameInput.value = decodeURIComponent(username);
       }
+    }
+    
+    const isAppleDevice = /iPhone|iPad|Mac/i.test(navigator.userAgent);
+
+    // Hide the Apple button if the user is not on an Apple device
+    if (!isAppleDevice) {
+      appleButton.style.display = 'none';
     }
 
     // Add event listener to the login form's submit button
@@ -62,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
               window.location.href = 'about.html';
             }, 100); // Adjust the timeout duration as needed
           }
-          
+
         } else {
           // Add red border to corresponding input fields
           if (response.status === 400 && usernameInput) {
