@@ -15,12 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         usernameInput.value = decodeURIComponent(username);
       }
     }
-    
+
     const isAppleDevice = /iPhone|iPad|Mac/i.test(navigator.userAgent);
 
     // Hide the Apple button if the user is not on an Apple device
     if (!isAppleDevice) {
-      appleButton.style.display = 'none';
+      appleButton.classList.add = 'hidden';
+
     }
 
     // Add event listener to the login form's submit button
