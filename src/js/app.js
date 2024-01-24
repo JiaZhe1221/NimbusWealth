@@ -7,8 +7,16 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
 
 // JavaScript to handle button click event and navigate to login page
 document.getElementById('getStartedBtn').addEventListener('click', function() {
-  window.location.href = 'signup.html'; // Replace 'login.html' with the actual path to your login page
+  window.location.href = 'signup.html'; 
 });
+
+const getStartedBtnoverview = document.getElementById('getStartedBtnoverview')
+
+if (getStartedBtnoverview) {
+  getStartedBtnoverview.addEventListener('click', function(){
+    window.location.href = 'signup.html'
+  })
+}
 
 // Function for goback button
 function goBack() {
@@ -19,10 +27,11 @@ function goBack() {
 const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
 if (isLoggedIn) {
-  // Perform actions as needed for a logged-in user
-  console.log('User is logged in.');
   const getStartedButton = document.getElementById('getStartedBtn');
   const profileIconContainer = document.getElementById('profile-icon-container');
+  if (getStartedBtnoverview) {
+    getStartedBtnoverview.classList.add('hidden');
+  }
   if (getStartedButton) {
     getStartedButton.style.display = 'none';
   }

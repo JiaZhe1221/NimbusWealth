@@ -10,11 +10,10 @@ app.use(bodyParser.json()); // Middleware to parse JSON
 
 // Middleware to handle CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://jiazhe1221.github.io');
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    next();
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');  // use https://jiazhe1221.github.io when website is live on github use http://localhost:8081 for local host
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
 });
 
 // Connection URI
@@ -62,11 +61,11 @@ MongoClient.connect(uri, (err, client) => {
             await usersCollection.insertOne(userData);
 
             res.status(200).json({ success: true, message: 'User registered successfully' });
-        } catch (error) {
-            console.error('Error processing registration:', error);
-            res.status(500).json({ success: false, message: 'Error processing registration' });
-        }
-    });
+          } catch (error) {
+              console.error('Error processing registration:', error);
+              res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+          }
+      });
 
     // Login endpoint
     app.post('/signin', async (req, res) => {

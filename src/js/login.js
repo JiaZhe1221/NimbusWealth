@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             // Wait for a short duration before redirecting to allow the event and local storage update to be processed
             setTimeout(() => {
-              window.location.href = '../../index.html'
+              window.location.href = 'home.html'
             }, 100); // Adjust the timeout duration as needed
         }
 
