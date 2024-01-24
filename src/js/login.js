@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.querySelector('.signin');
-  const appleButton = document.querySelector('.fa-apple');
+  const appleButton = document.querySelector('.social-icon-apple');
 
 
   if (loginForm && appleButton) {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hide the Apple button if the user is not on an Apple device
     if (!isAppleDevice) {
-      appleButton.classList.add = 'hidden';
+      appleButton.style.display = 'none';
 
     }
 

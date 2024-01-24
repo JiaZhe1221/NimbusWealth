@@ -157,6 +157,11 @@ body {
   color: #fff;
 }
 
+.container .form .social-icon-apple {
+  font-size: 1.5em;
+  color: #fff;
+}
+
 .container .form .inputBox input.error-border {
   border: 1px solid red;
 }
