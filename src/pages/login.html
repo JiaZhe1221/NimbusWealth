@@ -15,7 +15,7 @@
 <body>
 	<button onclick="goBack()" class="go-back-button">Back</button>
 	<div class="container w-max">
-		<div class="signin form">
+		<form class="signin form">
 			<h2 class="headertxt text-white font-semibold text-3xl tracking-wide">Sign In</h2>
 			<div class="inputBox">
 				<input type="text" name="username" id="username" required="required">
@@ -27,8 +27,9 @@
 				<input type="password" name="password" id="password" required>
 				<span>password</span>
 			</div>
+			<div id="error-message" class="hidden text-red-500"></div>
 			<div class="inputBox">
-				<input type="submit" value="Login">
+				<input type="submit" name="submit" id="submit" value="Login">
 			</div>
 			<p class="continue-with">Continue with:</p>
       		<div class="social-icons">
@@ -37,7 +38,7 @@
 				<a href="#" class="social-icon"><i class="fab fa-apple"></i></a>
       		</div>
 			<p>Not Registered ? <a href="signup.html" class="create">Create an account</a></p>
-		</div>
+		</form>
 	</div>
 
 

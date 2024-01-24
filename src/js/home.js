@@ -5,10 +5,10 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
   document.documentElement.classList.remove('dark')
 }
 
-document.getElementById('getStartedBtn').addEventListener('click', function() {
+document.getElementById('getStartedBtnhome').addEventListener('click', function() {
   window.location.href = 'src/pages/signup.html'; // Replace 'login.html' with the actual path to your login page
 });
 
-document.getElementById('getStartedBtnhome').addEventListener('click', function() {
+document.getElementById('getStartedBtnhomeoverview').addEventListener('click', function() {
     window.location.href = 'src/pages/signup.html'; // Replace 'login.html' with the actual path to your login page
   });
