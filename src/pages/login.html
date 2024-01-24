@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="../css/signin.css">
+	<script src="../js/app.js" defer></script>
+	<script src="../js/login.js" defer></script>
+	<title>Login</title>
+
+
+</head>
+<body>
+	<button onclick="goBack()" class="go-back-button">Back</button>
+	<div class="container w-max">
+		<form class="signin form">
+			<h2 class="headertxt text-white font-semibold text-3xl tracking-wide">Sign In</h2>
+			<div class="inputBox">
+				<input type="text" name="username" id="username" required="required">
+				<i class="fa-regular fa-user"></i>
+				<span>username</span>
+			</div>
+			<div class="inputBox">
+				<i class="fa-solid fa-lock hover:cursor-pointer" id="togglePassword"></i>
+				<input type="password" name="password" id="password" required>
+				<span>password</span>
+			</div>
+			<div id="error-message" class="hidden text-red-500"></div>
+			<div class="inputBox">
+				<input type="submit" name="submit" id="submit" value="Login">
+			</div>
+			<p class="continue-with">Continue with:</p>
+      		<div class="social-icons">
+        		<a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+        		<a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+				<a href="#" class="social-icon"><i class="fab fa-apple"></i></a>
+      		</div>
+			<p>Not Registered ? <a href="signup.html" class="create">Create an account</a></p>
+		</form>
+	</div>
+
+
+
+</body>
+</html>
