@@ -58,7 +58,7 @@ document.querySelector('.signup').addEventListener('submit', async function (eve
             errorContainer.textContent = '';
         }
 
-        const response = await fetch('http://localhost:8082/signup', {
+        const response = await fetch('https://jiazhe1221.github.io/NimbusWealth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

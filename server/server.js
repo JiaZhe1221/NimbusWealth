@@ -23,7 +23,7 @@ const uri = 'mongodb+srv://user123:SkyStudios5757@skystudios.rjfe3hg.mongodb.net
 MongoClient.connect(uri, (err, client) => {
   if (err) throw err;
 
-  // Access the database
+  // Access the databases
   const db = client.db('NimbusWealth');
 
   // Access the users collection
