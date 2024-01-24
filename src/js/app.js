@@ -8,7 +8,7 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
 
 // JavaScript to handle button click event and navigate to login page
 document.getElementById('getStartedBtn').addEventListener('click', function() {
-  window.location.href = 'login.html'; // Replace 'login.html' with the actual path to your login page
+  window.location.href = 'signup.html'; // Replace 'login.html' with the actual path to your login page
 });
 
 // Function for goback button

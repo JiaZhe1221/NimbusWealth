@@ -10,7 +10,7 @@ app.use(bodyParser.json()); // Middleware to parse JSON
 
 // Middleware to handle CORS
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://jiazhe1221.github.io/NimbusWealth/'); // Update the origin to match your local server
+  res.setHeader('Access-Control-Allow-Origin', 'https://jiazhe1221.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
