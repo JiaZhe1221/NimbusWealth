@@ -70,30 +70,31 @@ MongoClient.connect(uri, (err, client) => {
 
     // Login endpoint
     app.post('/signin', async (req, res) => {
-        const { username, password } = req.body;
-
-        try {
-            // Check if the user exists in the database
-            const existingUser = await usersCollection.findOne({ username: username });
-
-            if (!existingUser) {
-                return res.status(400).json({ success: false, message: 'User not found' });
-            }
-
-            // Compare the provided password with the hashed password in the database
-            const passwordMatch = await bcrypt.compare(password, existingUser.password);
-
-            if (!passwordMatch) {
-                return res.status(401).json({ success: false, message: 'Invalid password' });
-            }
-
-            // If username and password are valid, you can consider the user authenticated
-            res.status(200).json({ success: true, message: 'Login successful' });
-        } catch (error) {
-            console.error('Error processing login:', error);
-            res.status(500).json({ success: false, message: 'Error processing login' });
-        }
-    });
+      const { username, password } = req.body;
+  
+      try {
+          // Check if the user exists in the database
+          const existingUser = await usersCollection.findOne({ username: username });
+  
+          if (!existingUser) {
+              return res.status(400).json({ success: false, message: 'User not found' });
+          }
+  
+          // Compare the provided password with the hashed password in the database
+          const passwordMatch = await bcrypt.compare(password, existingUser.password);
+  
+          if (!passwordMatch) {
+              return res.status(401).json({ success: false, message: 'Invalid password' });
+          }
+  
+          // If username and password are valid, you can consider the user authenticated
+          // Send the user data along with the success response
+          res.status(200).json({ success: true, message: 'Login successful', userData: existingUser });
+      } catch (error) {
+          console.error('Error processing login:', error);
+          res.status(500).json({ success: false, message: 'Error processing login' });
+      }
+  });
 
     // Start the server
     app.listen(port, () => {

@@ -56,22 +56,23 @@ document.addEventListener('DOMContentLoaded', () => {
           if (responseData.success) {
             // Do something with the user data
             const userData = responseData.userData;
-          
+        
             // Store user data in sessionStorage or perform other actions
-            sessionStorage.setItem('userData', JSON.stringify(userData));
-          
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+        
             // Dispatch a custom event indicating successful login
             const loginEvent = new Event('loginSuccess');
             document.dispatchEvent(loginEvent);
-          
+        
             // Store a flag in local storage to indicate that the user is logged in
             localStorage.setItem('isLoggedIn', 'true');
-          
+        
             // Wait for a short duration before redirecting to allow the event and local storage update to be processed
             setTimeout(() => {
-              window.location.href = 'about.html';
+              window.location.href = '../../index.html'
             }, 100); // Adjust the timeout duration as needed
-          }
+        }
 
         } else {
           // Add red border to corresponding input fields
