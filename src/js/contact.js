@@ -10,3 +10,4 @@ iti.promise.then(function () {
     var flagElement = document.querySelector("#flag");
     flagElement.className = "iti__flag iti__" + iti.getSelectedCountryData().iso2;
 });
+
