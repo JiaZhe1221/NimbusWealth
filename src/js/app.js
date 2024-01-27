@@ -5,10 +5,23 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
   document.documentElement.classList.remove('dark');
 }
 
-// JavaScript to handle button click event and navigate to login page
-document.getElementById('getStartedBtn').addEventListener('click', function() {
-  window.location.href = 'signup.html'; 
-});
+const getstarted = document.getElementById('getStartedBtn')
+
+if (getstarted) {
+  getstarted.addEventListener('click', function() {
+    window.location.href = 'signup.html'; 
+  });
+}
+
+
+const profileicon = document.getElementById('profile-icon-container')
+
+if (profileicon) {
+  profileicon.addEventListener('click', function() {
+    window.location.href = 'account.html';
+  })
+}
+
 
 const getStartedBtnoverview = document.getElementById('getStartedBtnoverview')
 
@@ -36,6 +49,6 @@ if (isLoggedIn) {
     getStartedButton.style.display = 'none';
   }
   if (profileIconContainer) {
-    profileIconContainer.style.display = 'block';
+    profileIconContainer.classList.remove('hidden');
   }
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+const { ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 
 const app = express();
@@ -93,7 +94,194 @@ MongoClient.connect(uri, (err, client) => {
           console.error('Error processing login:', error);
           res.status(500).json({ success: false, message: 'Error processing login' });
       }
-  });
+    });
+
+    // Check username endpoint
+    app.post('/checkUsername', async (req, res) => {
+      try {
+          const { newUsername } = req.body;
+      
+          // Check if the new username already exists in the database
+          const existingUser = await usersCollection.findOne({ username: newUsername });
+      
+          if (existingUser) {
+              res.status(200).json({ success: false, message: 'Username already exists' });
+          } else {
+              res.status(200).json({ success: true, message: 'Username is unique' });
+          }
+      } catch (error) {
+          console.error('Error checking username:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Update username endpoint
+    app.post('/updateUsername', async (req, res) => {
+      try {
+          const { userId, newUsername } = req.body;
+  
+          // Convert userId to ObjectId
+          const objectId = new ObjectId(userId);
+  
+          // Update the username in the database
+          const result = await usersCollection.updateOne({ _id: objectId }, { $set: { username: newUsername } });
+          if (result.modifiedCount > 0) {
+              // Username updated successfully
+              res.status(200).json({ success: true, message: 'Username updated successfully' });
+          } else {
+              // No matching user found
+              res.status(404).json({ success: false, message: 'User not found' });
+          }
+      } catch (error) {
+          console.error('Error updating username:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Check old password endpoint
+    app.post('/checkOldPassword', async (req, res) => {
+      try {
+          // Extract necessary information from the request body
+          const { userId, oldPassword } = req.body;
+          const objectId = new ObjectId(userId);
+      
+          // Retrieve the user's hashed password from the database based on the username
+          const user = await usersCollection.findOne({ _id: objectId });
+      
+          if (!user) {
+              return res.status(400).json({ success: false, message: 'User not found' });
+          }
+        
+          // Compare the entered old password with the stored hashed password
+          const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+        
+          if (!passwordMatch) {
+              return res.status(401).json({ success: false, message: 'Incorrect old password' });
+          }
+        
+          // Password is correct
+          res.status(200).json({ success: true, message: 'Old password is correct' });
+      } catch (error) {
+          console.error('Error checking old password:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+    
+    // Update password endpoint
+    app.post('/updatePassword', async (req, res) => {
+      try {
+          // Extract necessary information from the request body
+          const { _id, newPassword } = req.body;
+          const objectId = new ObjectId(_id);
+          
+          // Hash the password
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+          // Update the user's password in the database
+          await usersCollection.updateOne({ _id: objectId }, { $set: { password: hashedPassword } });
+          res.status(200).json({ success: true, message: 'Password updated successfully' });
+      } catch (error) {
+          console.error('Error updating password:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Check if email exists endpoint
+    app.post('/checkEmailExistence', async (req, res) => {
+      try {
+          const { email } = req.body;
+      
+          // Check if the email already exists in the database
+          const existingEmail = await usersCollection.findOne({ email: email });
+      
+          if (existingEmail) {
+              return res.status(400).json({ success: false, message: 'Email already exists' });
+          }
+        
+          // Email is unique
+          res.status(200).json({ success: true, message: 'Email is unique' });
+      } catch (error) {
+          console.error('Error checking email existence:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Update email endpoint
+    app.post('/updateEmail', async (req, res) => {
+      try {
+          const { userId, newEmail } = req.body;
+      
+          // Update the email in the database
+          const result = await usersCollection.updateOne({ _id: ObjectId(userId) }, { $set: { email: newEmail } });
+      
+          if (result.modifiedCount > 0) {
+              // Email updated successfully
+              res.status(200).json({ success: true, message: 'Email updated successfully' });
+          } else {
+              // No matching user found
+              res.status(404).json({ success: false, message: 'User not found' });
+          }
+      } catch (error) {
+          console.error('Error updating email:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Update birthdate endpoint
+    app.post('/updateBirthdate', async (req, res) => {
+      try {
+          const { userId, newBirthdate } = req.body;
+      
+          // Convert userId to ObjectId
+          const objectId = new ObjectId(userId);
+      
+          // Update the birthdate in the database
+          const result = await usersCollection.updateOne(
+              { _id: objectId },
+              { $set: { birthdate: newBirthdate } }
+          );
+          
+          if (result.modifiedCount > 0) {
+              // Birthdate updated successfully
+              res.status(200).json({ success: true, message: 'Birthdate updated successfully' });
+          } else {
+              // No matching user found
+              res.status(404).json({ success: false, message: 'User not found' });
+          }
+      } catch (error) {
+          console.error('Error updating birthdate:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    // Update currency endpoint
+    app.post('/updateCurrency', async (req, res) => {
+      try {
+          const { userId, newCurrency } = req.body;
+      
+          // Convert userId to ObjectId
+          const objectId = new ObjectId(userId);
+      
+          // Update the currency in the database
+          const result = await usersCollection.updateOne(
+              { _id: objectId },
+              { $set: { currency: newCurrency } }
+          );
+          
+          if (result.modifiedCount > 0) {
+              // Currency updated successfully
+              res.status(200).json({ success: true, message: 'Currency updated successfully' });
+          } else {
+              // No matching user found
+              res.status(404).json({ success: false, message: 'User not found' });
+          }
+      } catch (error) {
+          console.error('Error updating currency:', error);
+          res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+      }
+    });
+
+    
 
     // Start the server
     app.listen(port, () => {
@@ -106,3 +294,5 @@ MongoClient.connect(uri, (err, client) => {
         process.exit();
     });
 });
+
+

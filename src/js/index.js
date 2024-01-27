@@ -5,28 +5,40 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
   document.documentElement.classList.remove('dark')
 }
 
-document.getElementById('getStartedBtnhome').addEventListener('click', function() {
-  window.location.href = 'src/pages/signup.html'; 
-});
+const getstartedhome = document.getElementById('getStartedBtnhome')
 
-document.getElementById('getStartedBtnhomeoverview').addEventListener('click', function() {
-    window.location.href = 'src/pages/signup.html';
+if (getstartedhome) {
+  getstartedhome.addEventListener('click', function() {
+    window.location.href = 'src/pages/signup.html'; 
   });
+}
 
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+const getstartedbtn = document.getElementById('getStartedBtnhomeoverview')
 
-  if (isLoggedIn) {
-    const getStartedButton = document.getElementById('getStartedBtnhome');
-    const profileIconContainer = document.getElementById('profile-icon-container');
-    const getStartedButtonoverview = document.getElementById('getStartedBtnhomeoverview');
+if (getstartedbtn) {
+  getstartedbtn.addEventListener('click', function() {
+    window.location.href = 'src/pages/signup.html';
+});
+}
 
-    if (getStartedButton) {
-      getStartedButton.style.display = 'none';
-      getStartedButtonoverview.classList.add('hidden')
-    }
-    if (profileIconContainer) {
-      profileIconContainer.style.display = 'block';
-    }
-  }else {
+const profileicon = document.getElementById('profile-icon-container')
+
+if (profileicon) {
+  profileicon.addEventListener('click', function() {
+    window.location.href = 'src/pages/account.html';
+  })
+}
+
+const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+if (isLoggedIn) {
+  const getStartedButton = document.getElementById('getStartedBtnhome');
+  const profileIconContainer = document.getElementById('profile-icon-container');
+  const getStartedButtonoverview = document.getElementById('getStartedBtnhomeoverview');
+  if (getStartedButton) {
+    getStartedButton.style.display = 'none';
+    getStartedButtonoverview.classList.add('hidden')
   }
-  
+  if (profileIconContainer) {
+    profileIconContainer.style.display = 'block';
+  }
+}
