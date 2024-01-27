@@ -96,6 +96,27 @@ MongoClient.connect(uri, (err, client) => {
       }
     });
 
+    // Endpoint to get user data based on userId
+    app.get('/getUserData', async (req, res) => {
+      const userId = req.query.userId;
+    
+      try {
+        // Find the user with the specified userId
+        const user = await usersCollection.findOne({ _id: ObjectId(userId) });
+      
+        if (!user) {
+          // If the user does not exist, send an error response
+          return res.status(404).json({ error: 'User not found.' });
+        }
+      
+        // Send the user data in the response
+        res.status(200).json({ user });
+      } catch (error) {
+        // Send an error response with details
+        res.status(500).json({ error: 'Internal server error.', details: error.message });
+      }
+    });
+
     // Check username endpoint
     app.post('/checkUsername', async (req, res) => {
       try {
@@ -281,7 +302,55 @@ MongoClient.connect(uri, (err, client) => {
       }
     });
 
+    // Add Wallet End Point
+    app.post('/addWalletItem', async (req, res) => {
+      const { userId, name, type, currency, amount } = req.body;
     
+      try {
+      
+        // Access the users collection
+        const usersCollection = db.collection('testing'); // Assuming you have a collection named 'testing'
+      
+        // Check if the user with the specified userId exists
+        const user = await usersCollection.findOne({ _id: ObjectId(userId) });
+      
+        if (!user) {
+          // If the user does not exist, send an error response
+          return res.status(400).json({ error: 'User not found.' });
+        }
+            
+        // Check if the name already exists in the wallet items
+        const existingItem = user.walletItems && user.walletItems.find(item => item.name === name);
+      
+        if (existingItem) {
+          // If the item already exists, send an error response
+          return res.status(400).json({ error: 'Wallet item with this name already exists for the user.' });
+        }
+      
+        // Create a new wallet item
+        const newWalletItem = {
+          name,
+          type,
+          currency,
+          amount
+        };
+      
+        // Update the user document by adding the new wallet item
+        await usersCollection.updateOne(
+          { _id: ObjectId(userId) },
+          { $push: { walletItems: newWalletItem } }
+        );
+        
+        // Send a success response
+        res.status(200).json({ success: 'Wallet item added successfully.' });
+      } catch (error) {
+        // Send an error response with details
+        res.status(500).json({ error: 'Internal server error.', details: error.message });
+      }
+    });
+
+
+
 
     // Start the server
     app.listen(port, () => {

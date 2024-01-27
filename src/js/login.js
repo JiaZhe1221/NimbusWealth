@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const responseData = await response.json();
 
           if (responseData.success) {
-            // Do something with the user data
             const userData = responseData.userData;
         
             // Store user data in sessionStorage or perform other actions

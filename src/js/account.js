@@ -1,4 +1,109 @@
-// Get all card elements
+async function fetchAndUpdateLocalStorage() {
+    try {
+      const userInfo = getUserInfo();
+      console.log(userInfo)
+      const userId = userInfo && userInfo._id.toString();
+      if (!userId) {
+        console.error('User ID not found in userInfo.');
+        return;
+      }
+  
+      const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+      const userData = await response.json();
+      if (userData && userData.userData) {
+        // Remove the specific property
+        delete userData.userData;
+      
+        // Store the modified user data back in local storage
+        localStorage.setItem('userData', JSON.stringify(userData));
+      }
+    } catch (error) {
+      console.error('Error fetching and updating local storage:', error);
+    }
+}
+  
+
+// Function to get user information from local storage
+function getUserInfo() {
+    const userDataString = localStorage.getItem('userData');
+    if (userDataString) {
+        return JSON.parse(userDataString);
+    }
+    return {};
+}
+
+// Function to update wallet items using data from local storage
+function updateWalletItems() {
+    try {
+      // Retrieve user data from local storage
+      const userData = getUserInfo();
+      if (userData) {
+        const walletItems = userData.walletItems || [];
+  
+        // Clear existing content in the wallet container
+        const walletContainer = document.getElementById('wallet');
+        walletContainer.innerHTML = '';
+  
+        // Group wallet items by type
+        const walletItemsByType = {};
+        walletItems.forEach((item) => {
+          if (!walletItemsByType[item.type]) {
+            walletItemsByType[item.type] = [];
+          }
+          walletItemsByType[item.type].push(item);
+        });
+  
+        // Iterate over wallet items by type and add them to the wallet container
+        for (const [type, items] of Object.entries(walletItemsByType)) {
+          const typeContainer = document.createElement('div');
+          typeContainer.className = 'bg-white dark:bg-gray-800 p-4 rounded-md shadow-md h-max relative mb-6';
+  
+          // Add type heading
+          const typeHeading = document.createElement('div');
+          typeHeading.className = 'flex justify-between mb-6';
+          typeHeading.innerHTML = `
+            <div>
+              <p class="text-xl font-semibold text-gray-900 dark:text-white p-1">${type}</p>
+            </div>
+          `;
+          typeContainer.appendChild(typeHeading);
+  
+          // Add wallet items for the current type
+          const typeContent = document.createElement('div');
+          typeContent.id = `collapsibleContent${type}`;
+          typeContent.className = 'ml-2 mt-4';
+  
+          items.forEach((item) => {
+            const walletItemDiv = document.createElement('div');
+            walletItemDiv.className = 'flex items-center mb-4';
+            walletItemDiv.innerHTML = `
+              <i class="fa fa-wallet text-xl text-gray-900 dark:text-white"></i>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-2">${item.name}</p>
+              <p class="ml-auto text-sm text-gray-600 dark:text-gray-400 mt-1">$${item.amount}</p>
+            `;
+            typeContent.appendChild(walletItemDiv);
+          });
+  
+          typeContainer.appendChild(typeContent);
+          walletContainer.appendChild(typeContainer);
+        }
+      } else {
+        console.error('User data not found in local storage.');
+      }
+    } catch (error) {
+      console.error('Error updating wallet items:', error);
+    }
+}
+  
+// Function to handle the page load event
+window.addEventListener('load', async () => {
+    // Call the function to fetch and update local storage
+    await fetchAndUpdateLocalStorage();
+});
+
+
+
+
 const cards = document.querySelectorAll('.relative[data-section]');
 
 cards.forEach(card => {
@@ -38,7 +143,7 @@ function updateModalContent(sectionName) {
 }
 
 // Attach hideModal function to close button
-const closeModalButton = document.getElementById('close'); // Replace with the correct ID
+const closeModalButton = document.getElementById('close'); 
 closeModalButton.addEventListener('click', function() {
     document.getElementById('authentication-modal').classList.add('hidden');
 
@@ -55,6 +160,30 @@ function updateLocalStorage(key, value) {
     // Save the updated data back to local storage
     localStorage.setItem('userData', JSON.stringify(storedData));
 }
+
+// Function to hide and show password
+function setupPasswordToggle(inputId, toggleId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(toggleId);
+
+    if (toggleIcon) {
+        toggleIcon.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+    
+            // Toggle eye icon
+            toggleIcon.innerHTML = type === 'password' ? '<i class="fa fa-eye" aria-hidden="true"></i>' : '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+        });
+
+    }
+    
+}
+
+// Handle each hide/show button
+setupPasswordToggle('oldpassword', 'toggleOldPassword');
+setupPasswordToggle('newpassword', 'toogleNewPassword');
+setupPasswordToggle('conpassword', 'toggleConPassword');
+
 
 // Check if username already exist
 async function isUsernameUnique(newUsername) {
@@ -121,10 +250,8 @@ async function checkOldPassword(userId, enteredPassword) {
         const result = await response.json();
 
         if (result.success) {
-            console.log('Old password is correct');
             return true;
         } else {
-            console.log('Incorrect old password');
             return false;
         }
     } catch (error) {
@@ -151,13 +278,7 @@ async function updatePasswordOnServer(userId, newPassword) {
             body: JSON.stringify(requestBody),
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-            console.log('Password updated on the server');
-        } else {
-            console.error('Failed to update password on the server');
-        }
+        await response.json();
     } catch (error) {
         console.error('Error updating password on the server:', error);
     }
@@ -288,7 +409,6 @@ async function handleFormSubmission(event) {
 
     const userInfo = getUserInfo();
     const userId = userInfo._id;
-    console.log(userId)
     const formData = new FormData(event.target);
     const username = formData.get('username');
     const oldPassword = formData.get('oldpassword');
@@ -365,15 +485,6 @@ async function handleFormSubmission(event) {
 // Attach the handleFormSubmission function to the form's submit event
 const form = document.querySelector('#change-info-section');
 form.addEventListener('submit', handleFormSubmission);
-
-// Function to get user information from local storage
-function getUserInfo() {
-    const userDataString = localStorage.getItem('userData');
-    if (userDataString) {
-        return JSON.parse(userDataString);
-    }
-    return {};
-}
 
 // Function to update account information
 function updateAccountInformation() {
@@ -501,7 +612,7 @@ updateWelcomeMessage();
 
 
 // Function to handle signout 
-function showModal() {
+function showsoModal() {
     document.getElementById('signOutModal').classList.remove('hidden');
 }
 
@@ -513,7 +624,7 @@ function hideModal() {
 // Event listener for the Sign Out button
 document.getElementById('signOutButton').addEventListener('click', function () {
     // Show the modal
-    showModal();
+    showsoModal();
 });
 
 // Event listener for the Confirm Sign Out button in the modal
@@ -533,3 +644,75 @@ document.getElementById('cancelSignOut').addEventListener('click', function () {
     hideModal();
 });
 
+// Handle add account
+const closeAccModalButton = document.getElementById('closeAccModalButton');
+const addItemButton = document.getElementById('walletmodal');
+const toggleAddButton = document.getElementById('addButton')
+
+// Function to show pop up window
+function showModal() {
+    const addWindow = document.getElementById('addWalletItemModal')
+    addWindow.classList.remove('hidden')
+}
+
+// Function to close the modal
+function closeModal() {
+    const addWindow = document.getElementById('addWalletItemModal')
+    addWindow.classList.add('hidden')
+}
+
+// Function to handle the submit (placeholder for now)
+async function submitForm(event) {
+    event.preventDefault(); 
+
+    const userInfo = getUserInfo();
+    const userId = userInfo._id;
+    const name = document.getElementById('name').value;
+    const type = document.getElementById('walletItemType').value;
+    const currency = document.getElementById('currencywallet').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    const errorMessageWallet = document.getElementById('errorMessageWallet');
+
+
+    // Make a POST request to the server
+    const response = await fetch('http://localhost:8082/addWalletItem', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId, name, type, currency, amount })
+    });
+
+    const result = await response.json();
+
+    // Check for error in the response
+    if (!response.ok) {
+        const resultError = result.error || 'An error occurred.';
+        console.error(resultError);
+
+        // Display an error message to the user
+        if (resultError.includes('Wallet item with this name already exists for the user.')) {
+            // Show the error message
+            errorMessageWallet.classList.add('hidden');
+            errorMessageWallet.classList.remove('hidden');
+        } else {
+            // Hide the error message if there's a different error
+            errorMessageWallet.classList.add('hidden');
+        }
+
+        return; // Exit the function to prevent further execution
+    }
+}
+
+
+if (closeModalButton) {
+    closeAccModalButton.addEventListener("click", closeModal);
+}
+
+if(addItemButton) {
+    addItemButton.addEventListener('submit', submitForm);
+}
+
+if(toggleAddButton) {
+    toggleAddButton.addEventListener("click", showModal);
+}
