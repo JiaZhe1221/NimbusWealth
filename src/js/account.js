@@ -1,27 +1,129 @@
 async function fetchAndUpdateLocalStorage() {
     try {
-      const userInfo = getUserInfo();
-      console.log(userInfo)
+      const userInfo = await getUserInfo();
       const userId = userInfo && userInfo._id.toString();
+  
       if (!userId) {
         console.error('User ID not found in userInfo.');
         return;
       }
   
       const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
-      const userData = await response.json();
-      if (userData && userData.userData) {
+      const userData = await response.json();  
+  
+      if (userData && userData.user) {
         // Remove the specific property
-        delete userData.userData;
-      
-        // Store the modified user data back in local storage
-        localStorage.setItem('userData', JSON.stringify(userData));
+        delete localStorage.userData;
+        // Store the user data in local storage
+        localStorage.setItem('userData', JSON.stringify(userData.user));
+      } else {
+        console.error('No userData.userData found in the response:', userData);
       }
     } catch (error) {
       console.error('Error fetching and updating local storage:', error);
     }
 }
-  
+
+function generateWalletItems(type, items) {
+    const container = document.getElementById(`collapsibleContent${type}`);
+
+    if (container) {
+      const fragment = document.createDocumentFragment();
+
+      items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('flex', 'items-center', 'mb-4');
+
+        const iconClass = getIconClass(item.type);
+        if (iconClass) {
+          const iconElement = document.createElement('i');
+          iconElement.className = iconClass;
+          itemElement.appendChild(iconElement);
+        } else {
+          console.error(`Invalid iconClass for type: ${type}`);
+        }
+
+        const nameElement = document.createElement('p');
+        nameElement.classList.add('text-sm', 'text-gray-600', 'dark:text-gray-400', 'mt-1', 'ml-2');
+        nameElement.textContent = item.name;
+        itemElement.appendChild(nameElement);
+
+        const amountElement = document.createElement('p');
+        amountElement.classList.add('ml-auto', 'text-sm', 'text-gray-600', 'dark:text-gray-400', 'mt-1');
+        amountElement.textContent = `$${item.amount}`;
+        itemElement.appendChild(amountElement);
+
+        fragment.appendChild(itemElement);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(fragment);
+    } else {
+      console.error(`Container not found for type: ${type}`);
+    }
+}
+
+
+function getIconClass(type) {
+    switch (type) {
+      case 'cash':
+        return 'fa fa-money-bill text-black dark:text-white';
+      case 'card':
+        return 'fa fa-credit-card text-black dark:text-white';
+      case 'payment':
+        return 'fa fa-wallet text-black dark:text-white';
+      case 'stock':
+        return 'fa fa-chart-line text-black dark:text-white';
+      case 'recharge':
+        return 'fa fa-address-card text-black dark:text-white';
+      case 'loan':
+        return 'fa fa-money-bill-wave text-black dark:text-white'
+      default:
+        return 'fa fa-question-circle text-black dark:text-white';
+    }
+}
+
+function calculateTotalAmount(walletItems, type) {
+    return walletItems
+      .filter(item => item.type === type)
+      .reduce((total, item) => total + item.amount, 0);
+}
+
+function displayWalletData() {
+    const userData = localStorage.getItem('userData');
+    const walletData = userData ? JSON.parse(userData).walletItems : [];
+
+    const organizedWalletData = {};
+    walletData.forEach(item => {
+      if (!organizedWalletData[item.type]) {
+        organizedWalletData[item.type] = [];
+      }
+      organizedWalletData[item.type].push(item);
+    });
+
+    Object.keys(organizedWalletData).forEach(type => {
+      // Try to find the container with a delay in case it's not yet available
+      let attempts = 0;
+      const findContainerInterval = setInterval(() => {
+        const container = document.getElementById(`collapsibleContent${type}`);
+        if (container || attempts >= 10) {
+          clearInterval(findContainerInterval);
+          generateWalletItems(type, organizedWalletData[type]);
+          // Calculate and update the total amount
+          const totalAmount = calculateTotalAmount(walletData, type);
+          const amountElementId = `Amount${type.toLowerCase()}`;
+          const amountElement = document.getElementById(amountElementId);
+
+          if (amountElement) {
+              amountElement.textContent = `$${totalAmount}`;
+          } else {
+              console.error(`Amount element not found for type: ${type}`);
+          }
+        }
+        attempts++;
+      }, 100);
+    });
+}
 
 // Function to get user information from local storage
 function getUserInfo() {
@@ -31,77 +133,13 @@ function getUserInfo() {
     }
     return {};
 }
-
-// Function to update wallet items using data from local storage
-function updateWalletItems() {
-    try {
-      // Retrieve user data from local storage
-      const userData = getUserInfo();
-      if (userData) {
-        const walletItems = userData.walletItems || [];
-  
-        // Clear existing content in the wallet container
-        const walletContainer = document.getElementById('wallet');
-        walletContainer.innerHTML = '';
-  
-        // Group wallet items by type
-        const walletItemsByType = {};
-        walletItems.forEach((item) => {
-          if (!walletItemsByType[item.type]) {
-            walletItemsByType[item.type] = [];
-          }
-          walletItemsByType[item.type].push(item);
-        });
-  
-        // Iterate over wallet items by type and add them to the wallet container
-        for (const [type, items] of Object.entries(walletItemsByType)) {
-          const typeContainer = document.createElement('div');
-          typeContainer.className = 'bg-white dark:bg-gray-800 p-4 rounded-md shadow-md h-max relative mb-6';
-  
-          // Add type heading
-          const typeHeading = document.createElement('div');
-          typeHeading.className = 'flex justify-between mb-6';
-          typeHeading.innerHTML = `
-            <div>
-              <p class="text-xl font-semibold text-gray-900 dark:text-white p-1">${type}</p>
-            </div>
-          `;
-          typeContainer.appendChild(typeHeading);
-  
-          // Add wallet items for the current type
-          const typeContent = document.createElement('div');
-          typeContent.id = `collapsibleContent${type}`;
-          typeContent.className = 'ml-2 mt-4';
-  
-          items.forEach((item) => {
-            const walletItemDiv = document.createElement('div');
-            walletItemDiv.className = 'flex items-center mb-4';
-            walletItemDiv.innerHTML = `
-              <i class="fa fa-wallet text-xl text-gray-900 dark:text-white"></i>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-2">${item.name}</p>
-              <p class="ml-auto text-sm text-gray-600 dark:text-gray-400 mt-1">$${item.amount}</p>
-            `;
-            typeContent.appendChild(walletItemDiv);
-          });
-  
-          typeContainer.appendChild(typeContent);
-          walletContainer.appendChild(typeContainer);
-        }
-      } else {
-        console.error('User data not found in local storage.');
-      }
-    } catch (error) {
-      console.error('Error updating wallet items:', error);
-    }
-}
   
 // Function to handle the page load event
 window.addEventListener('load', async () => {
     // Call the function to fetch and update local storage
     await fetchAndUpdateLocalStorage();
+    await displayWalletData();
 });
-
-
 
 
 const cards = document.querySelectorAll('.relative[data-section]');
@@ -599,12 +637,12 @@ if (walletbtn && accountbtn && fipbtn) {
 }
 
 // Set up collapsible content toggles
-handleCollapsibleContentToggle(document.getElementById('collapseBtnCash'), document.getElementById('collapsibleContentCash'), 'collapseCash');
-handleCollapsibleContentToggle(document.getElementById('collapseBtnCards'), document.getElementById('collapsibleContentCards'), 'collapseCards');
-handleCollapsibleContentToggle(document.getElementById('collapseBtnOnline'), document.getElementById('collapsibleContentOnline'), 'collapseOnline');
-handleCollapsibleContentToggle(document.getElementById('collapseBtnStocks'), document.getElementById('collapsibleContentStocks'), 'collapseStocks');
+handleCollapsibleContentToggle(document.getElementById('collapseBtnCash'), document.getElementById('collapsibleContentcash'), 'collapseCash');
+handleCollapsibleContentToggle(document.getElementById('collapseBtnCards'), document.getElementById('collapsibleContentcard'), 'collapseCards');
+handleCollapsibleContentToggle(document.getElementById('collapseBtnOnline'), document.getElementById('collapsibleContentpayment'), 'collapseOnline');
+handleCollapsibleContentToggle(document.getElementById('collapseBtnStocks'), document.getElementById('collapsibleContentstock'), 'collapseStocks');
 handleCollapsibleContentToggle(document.getElementById('collapseBtnRecharge'), document.getElementById('collapsibleContentRecharge'), 'collapseRecharge');
-handleCollapsibleContentToggle(document.getElementById('collapseBtnLoan'), document.getElementById('collapsibleContentLoan'), 'collapseLoan');
+handleCollapsibleContentToggle(document.getElementById('collapseBtnLoan'), document.getElementById('collapsibleContentloan'), 'collapseLoan');
 
 
 setActiveSectionFromStorage();
@@ -702,6 +740,9 @@ async function submitForm(event) {
 
         return; // Exit the function to prevent further execution
     }
+
+    closeModal();
+    location.reload();
 }
 
 

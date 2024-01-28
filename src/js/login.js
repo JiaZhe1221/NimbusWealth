@@ -1,4 +1,22 @@
+// Function to toggle password visibility
+function togglePasswordVisibility(inputId, toggleIconId) {
+  const passwordInput = document.getElementById(inputId);
+  const toggleIcon = document.getElementById(toggleIconId);
+
+  const type = passwordInput.type === 'password' ? 'text' : 'password';
+
+  passwordInput.type = type;
+
+  toggleIcon.className = type === 'password' ? 'fa-solid fa-lock hover:cursor-pointer' : 'fa-solid fa-unlock-alt hover:cursor-pointer';
+}
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
+  
+  document.getElementById('togglePassword').addEventListener('click', function () {
+    togglePasswordVisibility('password', 'togglePassword');
+  })
   const loginForm = document.querySelector('.signin');
   const appleButton = document.querySelector('.social-icon-apple');
 

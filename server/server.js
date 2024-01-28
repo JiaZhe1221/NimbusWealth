@@ -306,11 +306,7 @@ MongoClient.connect(uri, (err, client) => {
     app.post('/addWalletItem', async (req, res) => {
       const { userId, name, type, currency, amount } = req.body;
     
-      try {
-      
-        // Access the users collection
-        const usersCollection = db.collection('testing'); // Assuming you have a collection named 'testing'
-      
+      try {      
         // Check if the user with the specified userId exists
         const user = await usersCollection.findOne({ _id: ObjectId(userId) });
       
@@ -318,13 +314,12 @@ MongoClient.connect(uri, (err, client) => {
           // If the user does not exist, send an error response
           return res.status(400).json({ error: 'User not found.' });
         }
-            
         // Check if the name already exists in the wallet items
         const existingItem = user.walletItems && user.walletItems.find(item => item.name === name);
       
         if (existingItem) {
           // If the item already exists, send an error response
-          return res.status(400).json({ error: 'Wallet item with this name already exists for the user.' });
+          return res.status(401).json({ error: 'Wallet item with this name already exists for the user.' });
         }
       
         // Create a new wallet item
