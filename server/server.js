@@ -344,6 +344,114 @@ MongoClient.connect(uri, (err, client) => {
       }
     });
 
+    // Add Transaction endpoint
+    app.post('/submitTransaction', async (req, res) => {
+        const { userId, account, type, amount, currency, notes, transactionDateTime, ...additionalFields } = req.body;
+      
+        try {
+          // Check if the user with the specified userId exists
+          const user = await usersCollection.findOne({ _id: ObjectId(userId) });
+      
+          if (!user) {
+            // If the user does not exist, send an error response
+            return res.status(400).json({ error: 'User not found.' });
+          }
+      
+          // Create a new transaction object
+          const newTransaction = {
+            account,
+            type,
+            amount,
+            currency,
+            notes,
+            transactionDateTime,
+            ...additionalFields,
+            timestamp: new Date(),
+          };
+          
+          if (type === 'income') {
+
+            // Add the amount from the specified account
+            const updatedWalletItems = user.walletItems.map(walletItem => {
+                if (walletItem.name === account) {
+                  const updatedAmount = walletItem.amount + parseFloat(amount);
+                  return { ...walletItem, amount: updatedAmount };
+                }
+                return walletItem;
+              });
+        
+              // Update the user document with the updated wallet items and add the new income transaction
+              await usersCollection.updateOne(
+                { _id: ObjectId(userId) },
+                {
+                  $set: { walletItems: updatedWalletItems },
+                  $push: { transactionHistory: newTransaction },
+                }
+              );
+
+              return res.status(200).json({ success: 'Transaction added successfully.' });
+
+          } else if (type === 'expenses') {
+            // Deduct the amount from the specified account
+            const updatedWalletItems = user.walletItems.map(walletItem => {
+              if (walletItem.name === account) {
+                const updatedAmount = walletItem.amount - amount;
+                return { ...walletItem, amount: updatedAmount };
+              }
+              return walletItem;
+            });
+            
+            // Update the user document with the updated wallet items and add the new expense transaction
+            await usersCollection.updateOne(
+              { _id: ObjectId(userId) },
+              {
+                $set: { walletItems: updatedWalletItems },
+                $push: { transactionHistory: newTransaction },
+              }
+            );
+
+            return res.status(200).json({ success: 'Transaction added successfully.' });
+
+          } else if (type === 'transfer') {
+            // Convert amount to a numeric type
+            const numericAmount = parseFloat(amount);
+        
+            // Find the index of the payment account in walletItems
+            const paymentAccountIndex = user.walletItems.findIndex(walletItem => walletItem.name === additionalFields.paymentAccount);
+        
+            // Find the index of the receive account in walletItems
+            const receiveAccountIndex = user.walletItems.findIndex(walletItem => walletItem.name === additionalFields.receiveAccount);
+        
+            // Validate that the payment and receive accounts are different
+            if (paymentAccountIndex === receiveAccountIndex) {
+                return res.status(400).json({ error: 'Payment and receive accounts must be different.' });
+            }
+        
+            // Deduct the amount from the payment account
+            user.walletItems[paymentAccountIndex].amount -= numericAmount;
+        
+            // Add the amount to the receive account
+            user.walletItems[receiveAccountIndex].amount += numericAmount;
+        
+            // Update the user document with the updated wallet items and add the new transfer transaction
+            await usersCollection.updateOne(
+                { _id: ObjectId(userId) },
+                {
+                    $set: { walletItems: user.walletItems },
+                    $push: { transactionHistory: newTransaction },
+                }
+            );
+        
+            // Send a success response
+            return res.status(200).json({ success: 'Transaction added successfully.' });
+        }
+        } catch (error) {
+          // Send an error response with details
+          res.status(500).json({ error: 'Internal server error.', details: error.message });
+        }
+    });
+      
+  
 
 
 

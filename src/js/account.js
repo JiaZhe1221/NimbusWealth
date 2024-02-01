@@ -259,6 +259,8 @@ async function updateUsernameOnServer(userId, newUsername) {
         if (result.success) {
             // Update successful
             updateLocalStorage('username', newUsername);
+
+
         } else {
             // Display error message from the server
             displayErrorMessage(result.message);
@@ -463,6 +465,7 @@ async function handleFormSubmission(event) {
         if (isUnique) {
             // Make a request to update the username on the server
             await updateUsernameOnServer(userId, username);
+
         } else {
             displayErrorMessage('Username already exists. Please choose a different username.');
             return;
@@ -726,7 +729,6 @@ async function submitForm(event) {
     // Check for error in the response
     if (!response.ok) {
         const resultError = result.error || 'An error occurred.';
-        console.error(resultError);
 
         // Display an error message to the user
         if (resultError.includes('Wallet item with this name already exists for the user.')) {
