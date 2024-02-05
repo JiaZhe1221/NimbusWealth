@@ -1,27 +1,53 @@
-async function fetchAndUpdateLocalStorage() {
-    try {
-      const userInfo = await getUserInfo();
-      const userId = userInfo && userInfo._id.toString();
-  
-      if (!userId) {
-        console.error('User ID not found in userInfo.');
-        return;
-      }
-  
-      const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
-      const userData = await response.json();  
-  
-      if (userData && userData.user) {
-        // Remove the specific property
-        delete localStorage.userData;
-        // Store the user data in local storage
-        localStorage.setItem('userData', JSON.stringify(userData.user));
-      } else {
-        console.error('No userData.userData found in the response:', userData);
-      }
-    } catch (error) {
-      console.error('Error fetching and updating local storage:', error);
+let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
+
+function getUserData() {
+  const userDataString = localStorage.getItem('userData');
+  if (userDataString) {
+    return JSON.parse(userDataString);
+  }
+  return {};
+}
+
+async function fetchAndUpdateLocalVariable() {
+  try {
+    const userInfo = await getUserData();
+
+    if (!userInfo || !userInfo._id) {
+      alert('Invalid user info or user ID not found.');
+      return;
     }
+
+    const userId = userInfo._id.toString();
+
+    const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+
+    
+    if (!response.ok) {
+      alert(`Error: Server returned status ${response.status}`);
+      return;
+    }
+
+    // Use clone() to create a clone of the response before reading it
+    const responseClone = response.clone();
+    const responseBody = await response.text();
+    const userData = JSON.parse(responseBody);
+
+    if (userData && userData.user) {
+      userDataFromMongoDB = userData.user;
+    } else {
+      alert('No userData.userData found in the response:', userData);
+    }
+
+    // Use the cloned response for subsequent processing
+    return responseClone;
+  } catch (error) {
+    alert('Error fetching and updating local variable:', error);
+  }
+}
+
+async function getUserInfo() {
+  await fetchAndUpdateLocalVariable();
+  return userDataFromMongoDB || {};
 }
 
 function generateWalletItems(type, items) {
@@ -89,9 +115,9 @@ function calculateTotalAmount(walletItems, type) {
       .reduce((total, item) => total + item.amount, 0);
 }
 
-function displayWalletData() {
-    const userData = localStorage.getItem('userData');
-    const walletData = userData ? JSON.parse(userData).walletItems : [];
+async function displayWalletData() {
+    const userData = await getUserInfo();
+    const walletData = userData ? userData.walletItems : [];
 
     const organizedWalletData = {};
     walletData.forEach(item => {
@@ -125,19 +151,11 @@ function displayWalletData() {
     });
 }
 
-// Function to get user information from local storage
-function getUserInfo() {
-    const userDataString = localStorage.getItem('userData');
-    if (userDataString) {
-        return JSON.parse(userDataString);
-    }
-    return {};
-}
+
   
 // Function to handle the page load event
 window.addEventListener('load', async () => {
-    // Call the function to fetch and update local storage
-    await fetchAndUpdateLocalStorage();
+    await fetchAndUpdateLocalVariable();
     await displayWalletData();
 });
 
@@ -167,25 +185,37 @@ function updateModalContent(sectionName) {
         }
     });
 
+
+    document.getElementById('change-info-section').reset(); //to prevent autofill
+
     // Show the specific section
     const specificSection = Array.from(modalSections).find(section => section.id === sectionName);
     specificSection.classList.remove('hidden');
-    const inputElement = specificSection.querySelector('input')
+
+    // Show the update button
+    const button = document.getElementById('update');
+    button.classList.remove('hidden');
+
+    // Set the visible field for form submission
+    visibleField = sectionName;
+
+    // Set the required attribute for the visible input field
+    const inputElement = specificSection.querySelector('input');
     if (inputElement) {
         inputElement.setAttribute('required', 'required');
     }
-    const button = document.getElementById('update');
-    button.classList.remove('hidden')
-
-
 }
-
 // Attach hideModal function to close button
 const closeModalButton = document.getElementById('close'); 
 closeModalButton.addEventListener('click', function() {
     document.getElementById('authentication-modal').classList.add('hidden');
 
 });
+
+// Function to update data in local storage
+function updateLocalVariable(key, value) {
+    userDataFromMongoDB[key] = value;
+}
 
 // Function to update data in local storage
 function updateLocalStorage(key, value) {
@@ -258,7 +288,8 @@ async function updateUsernameOnServer(userId, newUsername) {
 
         if (result.success) {
             // Update successful
-            updateLocalStorage('username', newUsername);
+            updateLocalStorage('username', newUsername)
+            updateLocalVariable('username', newUsername);
 
 
         } else {
@@ -271,12 +302,10 @@ async function updateUsernameOnServer(userId, newUsername) {
     }
 }
 
-
 // Function to check if the entered old password matches the stored password
 async function checkOldPassword(userId, enteredPassword) {
     try {
         const response = await fetch('http://localhost:8082/checkOldPassword', {
-            
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -292,11 +321,11 @@ async function checkOldPassword(userId, enteredPassword) {
         if (result.success) {
             return true;
         } else {
-            return false;
+            return  false;
         }
     } catch (error) {
         console.error('Error checking old password:', error);
-        return false;
+        throw new Error('An error occurred while checking old password');
     }
 }
 
@@ -370,7 +399,7 @@ async function updateEmailOnServer(userId, newEmail) {
 
             if (result.success) {
                 // Update successful
-                updateLocalStorage('email', newEmail);
+                updateLocalVariable('email', newEmail);
             } else {
                 // Display error message from the server
                 displayErrorMessage(result.message);
@@ -399,7 +428,7 @@ async function updateBirthdateOnServer(userId, newBirthdate) {
 
         if (result.success) {
             // Update successful
-            updateLocalStorage('birthdate', newBirthdate);
+            updateLocalVariable('birthdate', newBirthdate);
         } else {
             // Display error message from the server
             displayErrorMessage(result.message);
@@ -425,7 +454,7 @@ async function updateCurrencyOnServer(userId, newCurrency) {
 
         if (result.success) {
             // Update successful
-            updateLocalStorage('currency', newCurrency);
+            updateLocalVariable('currency', newCurrency);
         } else {
             // Display error message from the server
             displayErrorMessage(result.message);
@@ -436,27 +465,35 @@ async function updateCurrencyOnServer(userId, newCurrency) {
     }
 }
 
-// Function to show error message
+// Variable to track the currently visible field
+let visibleField;
+
+function showField(fieldId) {
+    document.getElementById('change-info-section').reset();
+    visibleField = fieldId;
+    document.getElementById(fieldId).classList.remove('hidden');
+}
+
 function displayErrorMessage(message) {
     const errorMessage = document.getElementById('error-message');
     errorMessage.textContent = message;
     errorMessage.classList.remove('hidden');
 }
 
+
 // Function to handle form submission
 async function handleFormSubmission(event) {
     event.preventDefault();
-
-    const userInfo = getUserInfo();
+    const userInfo = await getUserInfo();
     const userId = userInfo._id;
     const formData = new FormData(event.target);
-    const username = formData.get('username');
-    const oldPassword = formData.get('oldpassword');
-    const newPassword = formData.get('newpassword');
-    const confirmPassword = formData.get('conpassword');
-    const email = formData.get('email');
-    const birthdate = formData.get('birthdate');
-    const currency = formData.get('currency');
+    const username = formData.get('username') ?? {};
+    const oldPassword = formData.get('oldpassword') ?? {};
+    const newPassword = formData.get('newpassword') ?? {};
+    const confirmPassword = formData.get('conpassword') ?? {};
+    const email = formData.get('email') ?? {};
+    const birthdate = formData.get('birthdate') ?? {};
+    const currency = formData.get('currency') ?? {};
 
     if (username) {
         // Check if the new username already exists
@@ -465,6 +502,8 @@ async function handleFormSubmission(event) {
         if (isUnique) {
             // Make a request to update the username on the server
             await updateUsernameOnServer(userId, username);
+            closeModal();
+            return;
 
         } else {
             displayErrorMessage('Username already exists. Please choose a different username.');
@@ -476,10 +515,12 @@ async function handleFormSubmission(event) {
         try {
             const isOldPasswordCorrect = await checkOldPassword(userId, oldPassword);
 
-            if (isOldPasswordCorrect) {
+            if (isOldPasswordCorrect === true) {
                 if (newPassword && confirmPassword && newPassword === confirmPassword) {
                     // Make a request to update the password on the server
                     await updatePasswordOnServer(userId, newPassword);
+                    closeModal();
+                    return;
                 } else {
                     displayErrorMessage('Passwords do not match. Please try again.');
                     return;
@@ -517,9 +558,8 @@ async function handleFormSubmission(event) {
 
     }
 
-    document.getElementById('authentication-modal').classList.add('hidden');
-    location.reload();
 }
+
 
 
 
@@ -528,9 +568,8 @@ const form = document.querySelector('#change-info-section');
 form.addEventListener('submit', handleFormSubmission);
 
 // Function to update account information
-function updateAccountInformation() {
-    const userInfo = getUserInfo();
-
+async function updateAccountInformation() {
+    const userInfo = await getUserInfo();
     // Update the DOM elements
     document.getElementById('usernameValue').textContent = userInfo.username || 'No username available';
     document.getElementById('emailValue').textContent = userInfo.email || 'No email available';
@@ -547,8 +586,9 @@ updateAccountInformation();
 
 
 // Function to update the welcome message and user email
-function updateWelcomeMessage() {
-    const { username, email } = getUserInfo();
+async function updateWelcomeMessage() {
+    const userInfo = await getUserInfo();
+    const { username, email } = userInfo;
 
     // Update the DOM elements
     document.getElementById('welcomeMessage').textContent = `Welcome, ${username || 'Guest'}`;
@@ -557,8 +597,10 @@ function updateWelcomeMessage() {
 
 
 // Function to update account information
-function updateAccountInformation() {
-    const { username, email, password, currency, birthdate } = getUserInfo();
+async function updateAccountInformation() {
+    const userInfo = await getUserInfo();
+
+    const { username, email, password, currency, birthdate } = userInfo;
 
     // Update the DOM elements
     document.getElementById('usernameValue').textContent = username || 'No username available';
@@ -698,15 +740,18 @@ function showModal() {
 
 // Function to close the modal
 function closeModal() {
+    const form = document.getElementById('change-info-section'); 
+    form.reset();
     const addWindow = document.getElementById('addWalletItemModal')
     addWindow.classList.add('hidden')
+    location.reload();
 }
 
 // Function to handle the submit (placeholder for now)
 async function submitForm(event) {
     event.preventDefault(); 
 
-    const userInfo = getUserInfo();
+    const userInfo = await getUserInfo();
     const userId = userInfo._id;
     const name = document.getElementById('name').value;
     const type = document.getElementById('walletItemType').value;
@@ -726,6 +771,8 @@ async function submitForm(event) {
 
     const result = await response.json();
 
+    closeModal();
+
     // Check for error in the response
     if (!response.ok) {
         const resultError = result.error || 'An error occurred.';
@@ -740,11 +787,8 @@ async function submitForm(event) {
             errorMessageWallet.classList.add('hidden');
         }
 
-        return; // Exit the function to prevent further execution
+        return;
     }
-
-    closeModal();
-    location.reload();
 }
 
 
@@ -758,4 +802,16 @@ if(addItemButton) {
 
 if(toggleAddButton) {
     toggleAddButton.addEventListener("click", showModal);
+}
+
+
+// Handle FIP
+function showAllBadges() {
+    window.location.href = 'fipBadges.html';
+}
+
+const badges = document.getElementById('badges');
+
+if (badges) {
+    badges.addEventListener('click', showAllBadges);
 }

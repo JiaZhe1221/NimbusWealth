@@ -13,14 +13,29 @@
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/contact.js" defer></script>
     <script src="../js/app.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <link rel="icon" href="../resources/icon/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../resources/icon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="../resources/icon/favicon-32x32.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../resources/icon/favicon-16x16.ico">
+
+    <!-- For Android devices -->
+    <link rel="icon" type="image/png" sizes="192x192" href="../resources/icon/android-chrome-192x192.ico">
+    <link rel="icon" type="image/png" sizes="512x512" href="../resources/icon/android-chrome-512x512.ico">
+
+    <!-- For Apple devices -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../resources/icon/apple-touch-icon.ico">
     <title>Contact Us</title>
 
 </head>
 
 <body class="font-sans bg-white dark:bg-black min-h-screen flex flex-col justify-between">
 
-    <nav class="maintxt">
-        <div class="flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav id="nav" class="maintxt fixed w-full z-50 bg-white dark:bg-black" data-aos="fade-up" data-aos-duration="1000">
+        <div class="hidden md:flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="#" class="flex items-center space-x- rtl:space-x-reverse cursor-pointer">
                 <img src="../resources/navbar/Sky Studios.png" class="h-8 ml-3 mr-4" alt="Sky Studios Logo" />
                 <span class="self-center text-3xl font-semibold text-black whitespace-nowrap dark:text-white">Sky
@@ -86,20 +101,66 @@
             </div>
         </div>
     </nav>
+  <div id="mobile" class="overflow-x-hidden">
+        <div id="mobile" class="">
+          <div id="mobileNav" class="md:hidden flex  flex-wrap items-center justify-between mx-auto p-4 w-full bg-black">
+            <a href="#" class="flex items-center cursor-pointer">
+                <!-- Logo -->
+                <img src="../resources/navbar/Sky Studios.png" class="h-6 ml-1 mr-4" alt="Sky Studios Logo" />
+                <span class="self-center text-xl font-semibold text-black whitespace-nowrap dark:text-white">Sky Studios</span>
+            </a>
+        
+            <!-- Mobile menu button with Font Awesome bars icon -->
+            <button id="mobileNavToggle" class="text-2xl text-black dark:text-white">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+        
+            <!-- Mobile Sidebar -->
+            <div id="sidebar" class="hidden absolute top-0 right-0 w-48 h-full transform translate-x-full transition-transform duration-300 ease-in-out shadow-lg rounded-lg z-50">
+                <div class="p-4 h-screen bg-gray-800 overflow-hidden">
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="home.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">Home</a>
+                        </li>
+                        <li>
+                            <a href="planning.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">Planning</a>
+                        </li>
+                        <li>
+                            <a href="fip.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">FIP</a>
+                        </li>
+                        <li>
+                            <a href="about.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">About</a>
+                        </li>
+                        <li>
+                            <a href="contact.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">Contact</a>
+                        </li>
+                        <li>
+                            <a href="fipBadges.html" class="block py-2 px-4 text-white hover:bg-gray-600 rounded-md transition-all duration-300 ease-in-out">Badges</a>
+                        </li>
+                        <li>
+                            <button id="mobileGetStartedBtn" class="block py-2 px-4 text-white bg-blue-700 rounded-full hover:bg-blue-800 transition-all duration-300 ease-in-out">Get Started</button>
+                        </li>
 
-    <main class="box-border ml-20 mr-20 ">
+                    </ul>
+                </div>
+              </div>
+          
+          </div>
+      
+        </div>
+
+    <main class="box-border mt-10 ml-20 mr-20 ">
         <section class="relative min-h-screen p-20 flex justify-center items-center flex-col ">
             <div class="headertxt max-w-3xl text-center">
-                <p class="text-4xl font-semibold text-black dark:text-white mb-4">
+                <p class="text-4xl font-semibold text-black dark:text-white mb-4" data-aos="fade-up" data-aos-duration="1000" data-aos-easing="ease-in-out">
                     <span class="text-blue-500">GET</span> in touch with
-                    <span class="gradient-st">Sky Studios</span>: <br>
+                    <span class="gradient-st" data-aos="flip-up" data-aos-duration="1500" data-aos-easing="ease-in-out">Sky Studios</span>: <br>
                     <span>We're here to collaborate and create</span>
                 </p>
             </div>
             <div class="mt-16 flex flex-wrap justify-center">
-                <div class="contactInfo w-full md:w-1/2 bg-white shadow-md dark:bg-black p-8 mb-8 md:mb-0">
+                <div class="contactInfo w-full md:w-1/2 bg-white shadow-md dark:bg-black p-8 mb-8 md:mb-0" data-aos="fade-right" data-aos-duration="1000" data-aos-easing="linear">
             
-                    <!-- Address -->
                     <div class="flex items-start w-full mb-6 pt-10 justify-center">
                         <div class="w-12 h-12 flex items-center justify-center shadow-md rounded-full flex-shrink-0">
                             <span class="fa fa-map-marker text-gray-700 dark:text-gray-200 text-2xl"></span>
@@ -147,8 +208,8 @@
                         <li><a href="#" class="flex items-center pl-1"><ion-icon name="logo-instagram" class="mr-2"></ion-icon></a></li>
                     </ul>
                 </div>
-                <div class="contactForm w-full md:w-1/2">
-                    <form>
+                <div class="contactForm w-full md:w-1/2" data-aos="fade-left" data-aos-duration="1000" data-aos-easing="linear">
+                    <form id="formContact"> <!-- Fix the typo here -->
                         <h2 class="text-white">Send Message</h2>
                         <div class="inputBox">
                             <input type="text" name="full_name" required="required" class="text-gray-200">
@@ -166,7 +227,7 @@
                                 </div>
                             </div>
                             <div class="w-1/2">
-                                <div class="gender-box pt-5 ">
+                                <div class="gender-box pt-5">
                                     <label for="gender" class="block mb-1 text-gray-300">Gender</label>
                                     <select id="gender" name="gender" required="required" class="w-full outline-none bg-transparent text-white">
                                         <option value="male">Male</option>
@@ -176,21 +237,42 @@
                                 </div>
                             </div>
                         </div>
-                        
+                
                         <div class="inputBox">
                             <textarea name="message" required="required" class="text-gray-200"></textarea>
                             <span>Type your Message...</span>
                         </div>
                         <div class="inputBox">
-                            <input type="submit" value="Send">
+                            <input type="submit" value="Send" id="contact-submit"> <!-- Added id for easier identification in JavaScript -->
                         </div>
                     </form>
                 </div>
+                
             </div>
             
                     
 
         </section>
+        
+        <div id="popup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+            <!-- Loading Animation Container -->
+            <div id="loading-animation" class="flex items-center justify-center mb-4">
+                <dotlottie-player src="https://lottie.host/fe9af98f-3bae-449d-b0b5-0704d6a82912/AlH9eHG3wt.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+            </div>
+        
+            <!-- Modal Content -->
+            <div id="modal" class="hidden bg-white p-8 rounded-lg shadow-lg max-w-md">
+                <!-- Thanks Message -->
+                <h2 class="text-2xl font-bold mb-4">Thanks for contacting us!</h2>
+                <p class="text-lg mb-4">If you have more questions, please email us at <a href="mailto:skystudios5757@gmail.com" class="text-blue-500">skystudios5757@gmail.com</a>.</p>
+        
+                <!-- Close Button -->
+                <button id="closePopup" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">Close</button>
+            </div>
+        </div>
+        
+        
+
     </main>
 
 
@@ -224,6 +306,7 @@
           </p>
         </div>
       </footer>
+ </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>

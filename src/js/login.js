@@ -13,7 +13,7 @@ function togglePasswordVisibility(inputId, toggleIconId) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   document.getElementById('togglePassword').addEventListener('click', function () {
     togglePasswordVisibility('password', 'togglePassword');
   })
@@ -70,12 +70,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (response.ok) {
           const responseData = await response.json();
-
+          console.log(responseData)
           if (responseData.success) {
             const userData = responseData.userData;
-        
-            // Store user data in sessionStorage or perform other actions
-            localStorage.setItem('userData', JSON.stringify(userData));
+
+            // Extract specific properties
+            const { _id, username } = userData;
+            
+            // Create a new object with only the desired properties
+            const userDataToStore = {
+              _id,
+              username,
+            };
+            
+            localStorage.setItem('isLoggedIn', 'true');
+
+            // Store the selected data in local storage
+            localStorage.setItem('userData', JSON.stringify(userDataToStore));
 
         
             // Dispatch a custom event indicating successful login
@@ -83,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.dispatchEvent(loginEvent);
         
             // Store a flag in local storage to indicate that the user is logged in
-            localStorage.setItem('isLoggedIn', 'true');
         
             // Wait for a short duration before redirecting to allow the event and local storage update to be processed
             setTimeout(() => {
