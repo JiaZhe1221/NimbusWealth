@@ -14,20 +14,18 @@ async function fetchAndUpdateLocalVariable() {
         const userInfo = await getUserData();
 
         if (!userInfo || !userInfo._id) {
-            window.location.href = 'login.html'; // Corrected redirection
+            window.location.href = 'login.html';
             return;
         }
 
         const userId = userInfo._id.toString();
 
-        const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
 
         if (!response.ok) {
             alert(`Error: Server returned status ${response.status}`);
             return;
         }
-
-        // Use clone() to create a clone of the response before reading it
         const responseClone = response.clone();
         const responseBody = await response.text();
         const userData = JSON.parse(responseBody);
@@ -58,7 +56,7 @@ const fetchLeaderboard = async () => {
     try {
         const userInfo = await getUserInfo();
         const userId = userInfo._id;
-        const response = await fetch(`http://localhost:8082/getLeaderboard?userId=${userId}`, {
+        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getLeaderboard?userId=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

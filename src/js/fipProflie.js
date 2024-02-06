@@ -19,7 +19,7 @@ async function fetchAndUpdateLocalVariable() {
   
       const userId = userInfo._id.toString();
   
-      const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+      const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
   
       
       if (!response.ok) {
@@ -574,7 +574,7 @@ async function sellStock(stockDetails, sellAmount) {
                 
 
                 // Update the user's data on the server
-                const response = await fetch(`http://localhost:8082/sellStocks?userId=${userId}`, {
+                const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/sellStocks?userId=${userId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -633,7 +633,7 @@ async function afterLogin() {
     const userInfo = await getUserData();
       userId = userInfo._id;
       // Make a request to the server to update the last login date
-      const response = await fetch(`http://localhost:8082/updateLastLogin?userId=${userId}`, {
+      const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/updateLastLogin?userId=${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -654,7 +654,7 @@ function showPopupLogIn() {
 async function checkDailyLogin() {
     const userInfo = await getUserData(); 
     const userId = userInfo._id
-    const response = await fetch(`http://localhost:8082/getLastLogin?userId=${userId}`);
+    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getLastLogin?userId=${userId}`);
     const data = await response.json();
 
     const lastLoginDate = new Date(data.lastLogin) || [];

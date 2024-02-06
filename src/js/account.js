@@ -19,7 +19,7 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
@@ -256,7 +256,7 @@ setupPasswordToggle('conpassword', 'toggleConPassword');
 // Check if username already exist
 async function isUsernameUnique(newUsername) {
     try {
-        const response = await fetch('http://localhost:8082/checkUsername', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/checkUsername', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -276,7 +276,7 @@ async function isUsernameUnique(newUsername) {
 // Function to update username
 async function updateUsernameOnServer(userId, newUsername) {
     try {
-        const response = await fetch('http://localhost:8082/updateUsername', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/updateUsername', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ async function updateUsernameOnServer(userId, newUsername) {
 // Function to check if the entered old password matches the stored password
 async function checkOldPassword(userId, enteredPassword) {
     try {
-        const response = await fetch('http://localhost:8082/checkOldPassword', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/checkOldPassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -339,7 +339,7 @@ async function updatePasswordOnServer(userId, newPassword) {
             newPassword: newPassword,
         };
 
-        const response = await fetch('http://localhost:8082/updatePassword', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/updatePassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -356,7 +356,7 @@ async function updatePasswordOnServer(userId, newPassword) {
 // Function to check if email is unique
 async function isEmailUnique(email) {
     try {
-        const response = await fetch('http://localhost:8082/checkEmailExistence', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/checkEmailExistence', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -387,7 +387,7 @@ async function updateEmailOnServer(userId, newEmail) {
 
         if (isUnique) {
             // Make a request to update the email on the server
-            const response = await fetch('http://localhost:8082/updateEmail', {
+            const response = await fetch('https://fathomless-sea-15492.herokuapp.com/updateEmail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -416,7 +416,7 @@ async function updateEmailOnServer(userId, newEmail) {
 // Function to update Birthdate
 async function updateBirthdateOnServer(userId, newBirthdate) {
     try {
-        const response = await fetch('http://localhost:8082/updateBirthdate', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/updateBirthdate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -442,7 +442,7 @@ async function updateBirthdateOnServer(userId, newBirthdate) {
 // Function to update currency
 async function updateCurrencyOnServer(userId, newCurrency) {
     try {
-        const response = await fetch('http://localhost:8082/updateCurrency', {
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/updateCurrency', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -761,7 +761,7 @@ async function submitForm(event) {
 
 
     // Make a POST request to the server
-    const response = await fetch('http://localhost:8082/addWalletItem', {
+    const response = await fetch('https://fathomless-sea-15492.herokuapp.com/addWalletItem', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -815,3 +815,150 @@ const badges = document.getElementById('badges');
 if (badges) {
     badges.addEventListener('click', showAllBadges);
 }
+
+async function getUserRank() {
+    try {
+        const userInfo = await getUserInfo();
+        const userId = userInfo._id;
+        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getLeaderboard?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const { leaderboard, currentUserRank } = await response.json();
+        console.log(currentUserRank)
+        if (currentUserRank == 0) {
+            updateRankUI(null);
+        }
+        updateRankUI(currentUserRank); // Call function to update UI with current rank
+    } catch (error) {
+        console.error('Error fetching user rank:', error.message);
+        updateRankUI(null);
+    }
+}
+
+function updateRankUI(rank) {
+    const rankElement = document.getElementById('rank');
+
+    if (rankElement) {
+        rankElement.innerHTML = `
+            <p class="text-xl font-semibold text-gray-900 dark:text-white p-1">FIP rank</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 pl-1">Current rank in FIP: ${rank !== null ? rank : 'null'}</p>
+        `;
+    }
+}
+
+async function getUserFIPAmount() {
+    try {
+        const userInfo = await getUserInfo();
+        const userId = userInfo._id;
+        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getFIPAmount?userId=${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const responsed = await response.json();
+        const fipAmount = responsed.stockCurrency;
+        if (fipAmount != number) {
+            updateFIPAmountUI(null);
+        }
+        updateFIPAmountUI(fipAmount); 
+    } catch (error) {
+        updateFIPAmountUI(null);
+    }
+}
+
+function updateFIPAmountUI(amount) {
+    const fipAmountElement = document.getElementById('FIPamount');
+
+    if (fipAmountElement) {
+        fipAmountElement.innerHTML = `
+            <p class="text-xl font-semibold text-gray-900 dark:text-white p-1">FIP amount</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 pl-1">FIP total amount: ${amount !== null ? amount : 'null'}</p>
+        `;
+    }
+}
+
+// Function to handle account termination
+async function terminateAccount() {
+    try {
+        const userInfo = await getUserInfo(); // Assuming you have a function to get user information
+        const userId = userInfo._id;
+
+        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/terminateAccount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const { success } = await response.json();
+
+        if (success) {
+            showThankYouModal();
+        } else {
+            // Handle termination failure
+            console.error('Account termination failed');
+        }
+    } catch (error) {
+        console.error('Error terminating account:', error.message);
+    }
+}
+
+function showThankYouModal() {
+    // Display the "Thank You" modal
+    const thankYouModal = document.getElementById('thankYouModal');
+    thankYouModal.classList.remove('hidden');
+
+    // Close button and feedback link elements in the modal
+    const closeThankYouModalBtn = document.getElementById('closeThankYouModalBtn');
+
+    // Event listener for the close button
+    closeThankYouModalBtn.addEventListener('click', function () {
+        thankYouModal.classList.add('hidden');
+    });
+}
+
+
+
+const terminateAccountBtn = document.getElementById('termination');
+const terminationModal = document.getElementById('terminationModal');
+const confirmTerminationBtn = document.getElementById('confirmTerminationBtn');
+const cancelTerminationBtn = document.getElementById('cancelTerminationBtn');
+
+// Show the termination modal when the terminate account button is clicked
+terminateAccountBtn.addEventListener('click', function () {
+  terminationModal.classList.remove('hidden');
+});
+
+// Hide the termination modal when the cancel button is clicked
+cancelTerminationBtn.addEventListener('click', function () {
+  terminationModal.classList.add('hidden');
+});
+
+// Handle the termination confirmation logic when the confirm button is clicked
+confirmTerminationBtn.addEventListener('click', function () {
+    terminateAccount();
+    terminationModal.classList.add('hidden');
+});
+
+
+getUserFIPAmount();
+getUserRank();

@@ -19,7 +19,7 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`http://localhost:8082/getUserData?userId=${userId}`);
+    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
@@ -440,7 +440,7 @@ async function handleTransactionSubmit(event) {
     const userId = userData._id;
 
     // Make a POST request to the server to handle the transaction
-    const response = await fetch(`http://localhost:8082/submitTransaction`, {
+    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/submitTransaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

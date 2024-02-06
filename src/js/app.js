@@ -197,5 +197,3 @@ if (download) {
     }
   });
 }
-
-updateUserLogin();
