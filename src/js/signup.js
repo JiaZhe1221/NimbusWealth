@@ -20,12 +20,26 @@ document.getElementById('toggleConfirmPassword').addEventListener('click', funct
     togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword');
 });
 
+function checkEmail() {
+    const emailInput = document.getElementById('emailInput');
+    const form = document.getElementById('signupform');
+    const emailField = form.querySelector('.email-field');
+    const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+    if (!emailInput.value.match(emailPattern)) {
+        return emailField.classList.add('invalid');
+    }
+
+    emailField.classList.remove('invalid');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const signupForm = document.querySelector('.signup');
 
   if (signupForm) {
       signupForm.addEventListener('submit', async (event) => {
           event.preventDefault(); // Prevent the default form submission
+          checkEmail();
           const usernameInput = document.getElementsByName('username')[0];
           const emailInput = document.getElementsByName('emailaddress')[0];
           const passwordInput = document.getElementById('password');
@@ -44,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailInput.classList.remove('error-border');
                 passwordInput.classList.remove('error-border');
                 confirmPasswordInput.classList.remove('error-border');
+                
                 errorContainer.textContent = '';
               }
               // Check if passwords match
@@ -102,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
               } else {
                   // Handle different HTTP status codes
                   const errorMessage = await response.text();
-                  console.error('Registration failed:', errorMessage);
 
                   // Handle username error statur 400
                   if (errorMessage.includes('Username') && usernameErrorContainer) {
@@ -150,3 +164,5 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Signup form not found.');
   }
 });
+
+

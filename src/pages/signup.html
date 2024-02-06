@@ -28,19 +28,22 @@
 	<button onclick="goBack()" class="go-back-button">Back</button>
 
 	<div class="container w-max">
-		<form class="signup form">
+		<form id="signupform" class="signup form">
 			<h2 class="headertxt text-white font-semibold text-3xl tracking-wide">Sign Up</h2>
 			<div class="inputBox">
 				<input type="text" name="username" required>
 				<i class="fa-regular fa-user"></i>
 				<span>username</span>
 			</div>
-			<div class="inputBox">
-				<input type="text" name="emailaddress" required>
-				<i class="fa-regular fa-envelope"></i>
-				<span>email address</span>
-			</div>
 			
+			<div class="inputBox">
+				<div class="email-field">
+					<input type="email" name="emailaddress" id="emailInput" required>
+					<i class="fa-regular fa-envelope"></i>
+					<span>Email Address</span>
+				</div>
+			</div>
+
 			<div class="inputBox">
 				<i class="fa-solid fa-lock hover:cursor-pointer" id="togglePassword"></i>
 				<input type="password" name="password" id="password" required>
