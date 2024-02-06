@@ -56,6 +56,8 @@ MongoClient.connect(uri, (err, client) => {
                 username: username,
                 email: emailaddress, // Fix variable name here
                 password: hashedPassword,
+                stockCurrency: 1000,
+                return: 0,
             };
 
             // Insert user data
@@ -463,41 +465,33 @@ MongoClient.connect(uri, (err, client) => {
                 return res.status(400).json({ error: 'User not found.' });
             }
         
-            const stockCurrency = user.stockCurrency;
-        
-            if (!stockCurrency) {
-                // If the user does not have a stockCurrency field, create one with $1000
-                await usersCollection.updateOne(
-                    { _id: ObjectId(userId) },
-                    {
-                        $set: { stockCurrency: { name: 'yourCurrency', amount: 1000 } }
-                    }
-                );
-            }
-        
+            
             // Calculate the total cost of the stocks
             const totalCost = parseFloat((stockPrice * sharesToBuy).toFixed(2));
-        
+            let stockCurrency = user.stockCurrency;
+
             // Check if the user has enough funds in yourCurrency wallet
-            if (!stockCurrency || stockCurrency.amount < totalCost) {
+            if (!stockCurrency || stockCurrency < totalCost) {
+                console.log(stockCurrency)
                 return res.status(400).json({ error: 'Insufficient funds.' });
             }
+
         
             // Deduct the total cost from the yourCurrency wallet
-            stockCurrency.amount -= totalCost;
+            stockCurrency -= totalCost;
         
             // Update the user document with the updated stockCurrency
             await usersCollection.updateOne(
                 { _id: ObjectId(userId) },
                 {
-                    $set: { 'stockCurrency.amount': stockCurrency.amount },
+                    $set: { 'stockCurrency': stockCurrency },
                 }
             );
             
             // Check if the user has buyStocks array
             const buyStocksArray = user.buyStocks;
             const stockValue = parseFloat(user.stockValue);
-            const totalReturn = user.return;
+            
             const unrealizedReturn = user.UnReturn;
 
             if (!unrealizedReturn) {
@@ -510,15 +504,7 @@ MongoClient.connect(uri, (err, client) => {
                 );
             }
 
-            if (!totalReturn) {
-                // If user does not have a return, create one
-                await usersCollection.updateOne(
-                    { _id: ObjectId(userId) },
-                    {
-                         $set: { return: 0 } 
-                    }
-                )
-            }
+            
             
 
             if (!buyStocksArray) {
@@ -578,18 +564,22 @@ MongoClient.connect(uri, (err, client) => {
 
             // Find the index of the stock with the given symbol in stocksOwn
             const existingStockIndex = stocksOwn.findIndex(stock => stock.symbol === stockSymbol);
+            const avgCost = (stockPrice * sharesToBuy) / sharesToBuy;
+
 
             if (existingStockIndex === -1) {
                 // If the stock doesn't exist, create a new entry
                 stocksOwn.push({
                     symbol: stockSymbol,
                     shares: sharesToBuy,
-                    totalCost: totalCost, // Assuming stockPrice is the cost per share
+                    totalCost: stockPrice * sharesToBuy,
+                    avgCost: avgCost, // Assuming stockPrice is the cost per share
                 });
             } else {
                 // If the stock exists, update the shares and total cost
                 stocksOwn[existingStockIndex].shares += sharesToBuy;
                 stocksOwn[existingStockIndex].totalCost += stockPrice * sharesToBuy;
+                stocksOwn[existingStockIndex].avgCost = stocksOwn[existingStockIndex].totalCost / stocksOwn[existingStockIndex].shares;
             }
 
             // Update the user document with the modified stocksOwn
@@ -612,124 +602,120 @@ MongoClient.connect(uri, (err, client) => {
     // Endpoint to handle stock sales
     app.post('/sellStocks', async (req, res) => {
         const { userId, stockSymbol, sharesToSell, stockPrice } = req.body;
-    
+
         try {
             // Check if the user with the specified userId exists
             const user = await usersCollection.findOne({ _id: ObjectId(userId) });
-    
+
             if (!user) {
                 // If the user does not exist, send an error response
                 return res.status(400).json({ error: 'User not found.' });
             }
-    
+
             // Extract stocksOwn from the user document or initialize an empty array
             let stocksOwn = user.stocksOwn || [];
-            let buyStocks = user.buyStocks || [];
 
             // Filter stocksOwn based on the stockSymbol
             const stocksToSell = stocksOwn.filter(stock => stock.symbol === stockSymbol);
-    
+
             // Check if there are stocks with the specified symbol
             if (stocksToSell.length === 0) {
                 return res.status(400).json({ error: 'No stocks found with the specified symbol.' });
             }
-    
-            // Sort stocksToSell based on the transactionDateTime in ascending order (oldest first)
-            stocksToSell.sort((a, b) => new Date(a.transactionDateTime) - new Date(b.transactionDateTime));
-    
-            // Retrieve all purchase records for the specified symbol
-            const buyRecords = buyStocks.filter(buy => buy.stockSymbol === stockSymbol);
-    
+
+            // Assuming you want to calculate the average cost for the first stock with the specified symbol
+            const avgCost = stocksToSell[0].avgCost;
+
             // Calculate the total earnings from the sale
-            const totalEarnings = stockPrice * sharesToSell;
-    
-            // Initialize variables to track the number of shares sold and the remaining shares to sell
-            let sharesSold = 0;
-            let remainingSharesToSell = sharesToSell;
-            let totalCostDeducted = 0; // Variable to store the total cost deducted
-    
-            // Iterate through the sorted purchase history (stocksToSell) to determine which shares to sell
-            for (const purchase of stocksToSell) {
-                const purchaseShares = parseFloat(purchase.shares);
-    
-                // Determine the number of shares to sell from this purchase
-                const sharesToSellFromThisPurchase = Math.min(remainingSharesToSell, purchaseShares);
-    
-                // Find the corresponding purchase record from buyRecords
-                const correspondingBuy = buyRecords.find(buy => buy.transactionDateTime === purchase.transactionDateTime);
-    
-                if (!correspondingBuy) {
-                    // Handle the case where the corresponding purchase record is not found
-                    return res.status(400).json({ error: 'Corresponding purchase record not found.' });
-                }
-    
-                const purchasePrice = parseFloat(correspondingBuy.stockPrice);
-                console.log(purchasePrice)
-                // Calculate the realized gain for the shares sold from this purchase
-                const realizedGain = (stockPrice - purchasePrice) * sharesToSellFromThisPurchase;
-    
-                // Update the user's return with the realized gain
-                user.return = parseFloat(user.return) + parseFloat(realizedGain);
-                console.log(realizedGain)
-                // Deduct the total cost for the sold shares from this purchase
-                const costDeducted = purchase.totalCost * (sharesToSellFromThisPurchase / purchaseShares);
-                totalCostDeducted += costDeducted;
-    
-                // Deduct the sold shares from this purchase
-                purchase.shares -= sharesToSellFromThisPurchase;
-    
-                // Update the total number of shares sold and remaining shares to sell
-                sharesSold += sharesToSellFromThisPurchase;
-                remainingSharesToSell -= sharesToSellFromThisPurchase;
-    
-                // Remove the purchase from stocksOwn if all shares from this purchase have been sold
-                if (purchase.shares === 0) {
-                    const purchaseIndex = stocksOwn.indexOf(purchase);
-                    stocksOwn.splice(purchaseIndex, 1);
-                }
-    
-                // Exit the loop if all shares have been sold
-                if (remainingSharesToSell === 0) {
-                    break;
-                }
-            }
-    
-            // If there are remaining shares to sell, it means there weren't enough shares in the purchase history
-            // Send an error response in this case
-            if (remainingSharesToSell > 0) {
+            const totalReturn = stockPrice - avgCost;
+
+            // Assuming you want to update the first stock with the specified symbol
+            const stockToSell = stocksToSell[0];
+            const remainingSharesToSell = stockToSell.shares - sharesToSell;
+
+            // Send an error response if there are insufficient shares to sell
+            if (remainingSharesToSell < 0) {
                 return res.status(400).json({ error: 'Insufficient shares to sell.' });
             }
-    
+
             // Deduct the total cost for the sold shares from the user's totalCost
-            user.totalCost = parseFloat(user.totalCost) - parseFloat(totalCostDeducted);
+            stockToSell.totalCost -= avgCost * sharesToSell;
+            stockToSell.shares -= sharesToSell;
+            stockToSell.avgCost = avgCost;
 
             // Update the user document with the modified stocksOwn, totalCost, and return
             await usersCollection.updateOne(
                 { _id: ObjectId(userId) },
                 {
-                    $set: {
-                        stocksOwn,
-                        totalCost: user.totalCost,
-                        return: user.return,
-                    },
+                    $set: { stocksOwn },
+                    $inc: { return: totalReturn }, // Increment return by totalReturn
                 }
             );
-    
+
             // Send a success response
-            return res.status(200).json({ success: 'Stocks sold successfully.', totalEarnings });
+            return res.status(200).json({ success: 'Stocks sold successfully.', totalEarnings: totalReturn });
         } catch (error) {
             // Send an error response with details
             console.error(error);
             res.status(500).json({ error: 'Internal server error.', details: error.message });
         }
     });
-    
-    
-    
-    
 
+    app.get('/getLeaderboard', async (req, res) => {
+        const { userId } = req.query; // Use query parameters for GET requests
+        try {
+            // Fetch user data from the database based on the user ID
+            const userData = await usersCollection.findOne({ _id: ObjectId(userId) });
+    
+            // Check if the user exists
+            if (!userData) {
+                console.log('halo');
+                return res.status(404).json({ error: 'User not found.' });
+            }
+    
+            const currentUser = userData.username;
+            const allUsersData = await usersCollection.find().toArray();
+            const sortedUsers = allUsersData.sort((a, b) => b.return - a.return);
+    
+            // Assign ranks to users based on their position in the sorted array
+            const leaderboardData = sortedUsers.map((user, index) => ({
+                rank: index + 1,
+                username: user.username,
+                score: user.return,
+            }));
+    
+            // Find the rank of the current user
+            const currentUserRank = leaderboardData.findIndex(user => user.username === currentUser) + 1;
+    
+            // Send the ranked leaderboard data along with the current user's rank
+            res.json({ leaderboard: leaderboardData, currentUserRank });
+        } catch (error) {
+            console.error('Error fetching leaderboard data:', error);
+            res.status(500).json({ error: 'Internal server error.' });
+        }
+    });
 
-      
+    app.post('/updateLastLogin', async (req, res) => {
+        const { userId } = req.body;
+
+        // Update the last login date for the user in your database
+        await usersCollection.updateOne(
+            { _id: ObjectId(userId) },
+            { $set: { lastLogin: new Date() }, $inc: { stockCurrency: 200 } }
+        );
+    
+        res.json({ success: true });
+    });
+    
+    app.get('/getLastLogin', async (req, res) => {
+        const { userId } = req.query;
+    
+        // Fetch the last login date for the user from your database
+        const userData = await usersCollection.findOne({ _id: ObjectId(userId) });
+    
+        // Send the last login date to the client
+        res.json({ lastLogin: userData.lastLogin });
+    });
   
 
     // Start the server

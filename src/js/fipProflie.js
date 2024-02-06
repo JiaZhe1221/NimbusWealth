@@ -122,9 +122,8 @@ async function calculateTotalUnrealizedReturn(userData) {
 
     // Calculate total unrealized return for all stocks
     const totalUnrealizedReturn = stocksOwn.reduce((total, stock) => {
-        //const currentStockPrice = fakeStockPrices[stock.symbol]; //for testing purpose delete before using
         const currentStockPrice = stockPrices[stock.symbol];
-        const unrealizedReturn = (currentStockPrice - stock.totalCost / stock.shares) * stock.shares;
+        const unrealizedReturn = (currentStockPrice - stock.avgCost) * stock.shares;
         return total + unrealizedReturn;
     }, 0);
 
@@ -139,7 +138,7 @@ async function calculateTotalEquity(userData) {
 }
 
 function totalCash(userData) {
-    const cashAmount = userData.stockCurrency ? userData.stockCurrency.amount : 0;
+    const cashAmount = userData.stockCurrency ?? 0;
     return cashAmount;
 }
 
@@ -173,7 +172,6 @@ async function calculateEquity(stocksOwn) {
 async function fetchRealTimeStockPrices(symbols) {
     const apiKey = 'cmu8s39r01qsv99m4llgcmu8s39r01qsv99m4lm0';
     const apiUrl = 'https://finnhub.io/api/v1/quote';
-
     const stockPrices = {};
 
     for (const symbol of symbols) {
@@ -260,7 +258,11 @@ function initializeUserProfileGraph(unrealizedReturnData, realizedReturnData, st
 }
 
 function mapDataToArray(dataObject) {
-    return Object.entries(dataObject).map(([date, value]) => ({ date, value }));
+    if (dataObject && typeof dataObject === 'object') {
+        return Object.entries(dataObject).map(([date, value]) => ({ date, value }));
+    } else {
+        return [];
+    }
 }
 
 // Generate an array of dates in the range
@@ -548,14 +550,13 @@ async function sellStock(stockDetails, sellAmount) {
             const currentStockShares = parseFloat(currentStock.shares);
             const sellAmountNumber = parseFloat(sellAmount);
             const remainingShares = currentStockShares - sellAmountNumber;
-            console.log(remainingShares);
 
             if (remainingShares >= 0) {
                 // Deduct the sold shares from the current stock
                 currentStock.shares = remainingShares;
 
                 // Calculate the total earnings from the sale
-                const sellPrice = stockDetails.currentPrice; // Use the current price obtained earlier
+                const sellPrice = stockDetails.currentPrice;
                 const totalEarnings = sellPrice * sellAmount;
 
                 // Deduct the total cost and update the return data
@@ -580,9 +581,9 @@ async function sellStock(stockDetails, sellAmount) {
                     },
                     body: JSON.stringify({
                         userId,
-                        stockSymbol: sellData.symbol,     // Corrected key
-                        sharesToSell: sellData.sellAmount, // Corrected key
-                        stockPrice: sellData.sellPrice     // Corrected key
+                        stockSymbol: sellData.symbol,     
+                        sharesToSell: sellData.sellAmount,
+                        stockPrice: sellData.sellPrice     
                     }),
                 });
 
@@ -628,10 +629,63 @@ async function fetchDataAndDisplay() {
 }
 
 
+async function afterLogin() {
+    const userInfo = await getUserData();
+      userId = userInfo._id;
+      // Make a request to the server to update the last login date
+      const response = await fetch(`http://localhost:8082/updateLastLogin?userId=${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      });
+      location.reload();
+}
+
+function showPopupLogIn() {
+    const dailyModal = document.getElementById('dailyLoginModal');
+    if (dailyModal) {
+        dailyModal.classList.remove('hidden');
+    }
+}
+
+
+async function checkDailyLogin() {
+    const userInfo = await getUserData(); 
+    const userId = userInfo._id
+    const response = await fetch(`http://localhost:8082/getLastLogin?userId=${userId}`);
+    const data = await response.json();
+
+    const lastLoginDate = new Date(data.lastLogin) || [];
+    const currentDate = new Date();
+
+    if (
+        lastLoginDate.getDate() !== currentDate.getDate() ||
+        lastLoginDate.getMonth() !== currentDate.getMonth() ||
+        lastLoginDate.getFullYear() !== currentDate.getFullYear()
+    ) {
+        showPopupLogIn();
+    }
+}
+
+
+
+const claimBonus = document.getElementById('claimBonusBtn');
+
+if (claimBonus) {
+    claimBonus.addEventListener("click", async () => {
+        console.log('h')
+        const dailyModal = document.getElementById('dailyLoginModal');
+        dailyModal.classList.add('hidden');
+        afterLogin();
+    });
+}
 
 
 const apiKey = 'cmu8s39r01qsv99m4llgcmu8s39r01qsv99m4lm0';
 
+checkDailyLogin();
 fetchDataAndDisplay();
 fetchAndUpdateLocalVariable();
 fetchFinancialNews(apiKey);

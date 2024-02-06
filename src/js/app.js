@@ -5,6 +5,14 @@ if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localS
   document.documentElement.classList.remove('dark');
 }
 
+function getUserData() {
+  const userDataString = localStorage.getItem('userData');
+  if (userDataString) {
+    return JSON.parse(userDataString);
+  }
+  return {};
+}
+
 
 
 const profileicon = document.getElementById('profile-icon-container')
@@ -58,6 +66,7 @@ function clickDownButton() {
   }
 }
 
+
 if (isLoggedIn) {
   setTimeout(clickDownButton, 100);
   const getStartedButton = document.getElementById('getStartedBtn');
@@ -82,6 +91,8 @@ if (isLoggedIn) {
   }
 
 }
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   AOS.init();
@@ -186,3 +197,5 @@ if (download) {
     }
   });
 }
+
+updateUserLogin();

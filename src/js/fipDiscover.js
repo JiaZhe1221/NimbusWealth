@@ -394,7 +394,7 @@ const handleBuyButtonClick = async () => {
             }),
         });
 
-        const responseData = await response.json();  // Call json() only once
+        const responseData = await response.json(); 
 
         if (response.ok) {
             // Refresh user data in variable
@@ -440,8 +440,7 @@ if (buyButton) {
 
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Simulate loading delay for 6 seconds
-        await new Promise(resolve => setTimeout(resolve, 8000));
+        await new Promise(resolve => setTimeout(resolve, 10000));
 
         // Hide loading animation
         document.getElementById('loading-animation').classList.add('hidden');
