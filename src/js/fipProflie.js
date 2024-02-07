@@ -593,12 +593,12 @@ async function sellStock(stockDetails, sellAmount) {
                 }
 
                 const updatedUserData = await response.json();
-                console.log('User data updated successfully on the server:', updatedUserData);
-
                 // Display updated financial information
                 await displayFinancialInformation({
                     ...userData
                 });
+
+                location.reload();
             } else {
                 console.log('exist');
                 alert('You cannot sell more shares than you own.');
