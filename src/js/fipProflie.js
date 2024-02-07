@@ -654,8 +654,11 @@ async function afterLogin() {
             const data = await response.json();
 
             // Update the added currency amount in the modal
-            addedCurrencyAmountSpan.textContent = `$${data.addedCurrency}`;
-            
+            const bonusAmountSpan = document.getElementById('bonusAmount');
+            if (bonusAmountSpan) {
+                bonusAmountSpan.textContent = `$${data.addedCurrency}`;
+            }
+
             // Show the claim message
             const claimMessage = document.getElementById('claimMessage');
             if (claimMessage) {
@@ -668,12 +671,6 @@ async function afterLogin() {
     }
 }
 
-function showPopupLogIn() {
-    const dailyModal = document.getElementById('dailyLoginModal');
-    if (dailyModal) {
-        dailyModal.classList.remove('hidden');
-    }
-}
 
 async function checkDailyLogin() {
     const userInfo = await getUserData();
@@ -689,7 +686,7 @@ async function checkDailyLogin() {
         lastLoginDate.getMonth() !== currentDate.getMonth() ||
         lastLoginDate.getFullYear() !== currentDate.getFullYear()
     ) {
-        showPopupLogIn();
+        showPopupLogIn();  // Call the function to show the login modal
     }
 }
 
