@@ -64,9 +64,43 @@
 				<input type="submit" value="Create Account">
 			</div>
 			<p>Already a member ? <a href="login.html" class="login">Log in</a></p>
+			<div class="terms-and-conditions flex">
+				<div class="termsCheck flex items-center">
+					<input class="mr-3" type="checkbox" id="termsCheckbox" required>
+					<label class="text-sm" for="termsCheckbox">I agree to the <span class="terms-link" onclick="openTermsPopup()">Terms and Conditions</span></label>
+				</div>
+			</div>
 		</form>
 	</div>
   </div>
+
+  <div id="termsPopup" class="overlay">
+	<div class="popup">
+		<span class="close-btn" onclick="closeTermsPopup()">&times;</span>
+		<h2 class="text-3xl font-bold mb-8">Terms and Conditions</h2>
+		<p>
+			By using Nimbus Wealth, you agree to the following terms and conditions:
+			<br>
+			<br><strong>1. Data Storage:</strong> Nimbus Wealth reserves the right to store user data, including but not limited to account information, transaction history, and preferences. We prioritize the security and confidentiality of user data.
+			
+			<br><strong>2. Password Security:</strong> Nimbus Wealth will not store user passwords in plaintext. Passwords will be encrypted using industry-standard methods to ensure the security of user accounts.
+			
+			<br><strong>3. Account Protection:</strong> Users are responsible for maintaining the confidentiality of their account credentials. Nimbus Wealth will not be liable for any unauthorized access to user accounts due to negligence on the user's part.
+			
+			<br><strong>4. User Privacy:</strong> Nimbus Wealth is committed to protecting user privacy. We will not sell or share user information with third parties for marketing purposes without explicit consent.
+			
+			<br><strong>5. Compliance with Laws:</strong> Users are required to comply with all applicable laws and regulations while using Nimbus Wealth. Any unlawful activities will result in the termination of the user's account.
+			
+			<br><strong>6. Changes to Terms:</strong> Nimbus Wealth reserves the right to modify or update these terms and conditions at any time. Users will be notified of significant changes, and continued use of the platform constitutes acceptance of the modified terms.
+			
+			<br><strong>7. Termination of Account:</strong> Nimbus Wealth reserves the right to terminate or suspend user accounts for violations of these terms or any other activities that may harm the platform or its users.
+			
+			<br><strong>8. Disclaimer:</strong> Nimbus Wealth provides financial information and tools for educational purposes only. Users are encouraged to seek professional financial advice before making any investment decisions.
+			
+			<br><strong>9. Contact:</strong> For questions or concerns regarding these terms and conditions, please contact us at <a href="mailto:skystudios5757@gmail.com">skystudios5757@gmail.com</a>.
+		</p>
+	</div>
+  </div>	
 
   <div id='loading' class="hidden">
 	<dotlottie-player src="https://lottie.host/e2cb1ac4-ee70-45f2-bd16-52fa0cd56f8d/260MJdfw6H.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>

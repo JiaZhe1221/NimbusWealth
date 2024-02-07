@@ -175,3 +175,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
+
+const termsPopup = document.getElementById('termsPopup');
+
+function closeTermsPopup() {
+    termsPopup.style.display = 'none';
+}
+function openTermsPopup() {
+    termsPopup.style.display = 'flex';
+}
+// Close the popup if the user clicks outside of it
+window.addEventListener('click', function (event) {
+    if (event.target === termsPopup) {
+        closeTermsPopup();
+    }
+});
+const termsCheckbox = document.getElementById('termsCheckbox');
+const submitButton = document.getElementById('submitButton');
+
+termsCheckbox.addEventListener('change', function () {
+    submitButton.disabled = !termsCheckbox.checked;
+});
+
+function openTermsPopup() {
+    termsPopup.style.display = 'flex';
+}
