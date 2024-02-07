@@ -1,4 +1,6 @@
 let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
+let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com"
+
 
 function getUserData() {
   const userDataString = localStorage.getItem('userData');
@@ -19,7 +21,7 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
+    const response = await fetch(`${url}/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
@@ -256,7 +258,7 @@ setupPasswordToggle('conpassword', 'toggleConPassword');
 // Check if username already exist
 async function isUsernameUnique(newUsername) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/checkUsername', {
+        const response = await fetch('${url}/checkUsername', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -276,7 +278,7 @@ async function isUsernameUnique(newUsername) {
 // Function to update username
 async function updateUsernameOnServer(userId, newUsername) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updateUsername', {
+        const response = await fetch('${url}/updateUsername', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -305,7 +307,7 @@ async function updateUsernameOnServer(userId, newUsername) {
 // Function to check if the entered old password matches the stored password
 async function checkOldPassword(userId, enteredPassword) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/checkOldPassword', {
+        const response = await fetch('${url}/checkOldPassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -339,7 +341,7 @@ async function updatePasswordOnServer(userId, newPassword) {
             newPassword: newPassword,
         };
 
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updatePassword', {
+        const response = await fetch('${url}/updatePassword', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -356,7 +358,7 @@ async function updatePasswordOnServer(userId, newPassword) {
 // Function to check if email is unique
 async function isEmailUnique(email) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/checkEmailExistence', {
+        const response = await fetch('${url}/checkEmailExistence', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -387,7 +389,7 @@ async function updateEmailOnServer(userId, newEmail) {
 
         if (isUnique) {
             // Make a request to update the email on the server
-            const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updateEmail', {
+            const response = await fetch('${url}/updateEmail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -416,7 +418,7 @@ async function updateEmailOnServer(userId, newEmail) {
 // Function to update Birthdate
 async function updateBirthdateOnServer(userId, newBirthdate) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updateBirthdate', {
+        const response = await fetch('${url}/updateBirthdate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -442,7 +444,7 @@ async function updateBirthdateOnServer(userId, newBirthdate) {
 // Function to update currency
 async function updateCurrencyOnServer(userId, newCurrency) {
     try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updateCurrency', {
+        const response = await fetch('${url}/updateCurrency', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -764,7 +766,7 @@ async function submitForm(event) {
 
 
     // Make a POST request to the server
-    const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/addWalletItem', {
+    const response = await fetch('${url}/addWalletItem', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -823,7 +825,7 @@ async function getUserRank() {
     try {
         const userInfo = await getUserInfo();
         const userId = userInfo._id;
-        const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getLeaderboard?userId=${userId}`, {
+        const response = await fetch(`${url}/getLeaderboard?userId=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -861,7 +863,7 @@ async function getUserFIPAmount() {
     try {
         const userInfo = await getUserInfo();
         const userId = userInfo._id;
-        const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getFIPAmount?userId=${userId}`, {
+        const response = await fetch(`${url}/getFIPAmount?userId=${userId}`, {
 
     
             method: 'GET',
@@ -902,7 +904,7 @@ async function terminateAccount() {
         const userInfo = await getUserInfo(); // Assuming you have a function to get user information
         const userId = userInfo._id;
 
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/terminateAccount', {
+        const response = await fetch('${url}/terminateAccount', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

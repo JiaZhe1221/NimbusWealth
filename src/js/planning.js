@@ -8,6 +8,7 @@ function getUserData() {
   return {};
 }
 
+let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com";
 async function fetchAndUpdateLocalVariable() {
   try {
     const userInfo = await getUserData();
@@ -19,11 +20,11 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
+    const response = await fetch(`${url}/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
-      alert(`Error: Server returned status ${response.status}`);
+      window.location.href = 'login.html';
       return;
     }
 
@@ -107,6 +108,7 @@ async function autoFillExchangeRate() {
     const transactionType = getSelectedType();
     const userData = await getUserInfo();
     const walletItems = userData.walletItems;
+    const userCurrency = userData.currency;
 
     // Find the wallet with the specified currency
     const foundWallet = walletItems.find(wallet => wallet.currency === baseCurrency);
@@ -116,7 +118,17 @@ async function autoFillExchangeRate() {
       const targetCurrency = foundWallet.currency;
 
       // Fetch real-time exchange rate using the base and target currencies
-      const exchangeRate = await fetchRealTimeExchangeRate(baseCurrency, targetCurrency);
+      let exchangeRate = 0; // Default to 0
+
+      if (userCurrency !== baseCurrency) {
+        // Fetch exchange rate only if userCurrency is not the same as targetCurrency
+        exchangeRate = await fetchRealTimeExchangeRate(baseCurrency);
+      }
+
+      if (baseCurrency !== targetCurrency) {
+        exchangeRate = await fetchRealTimeExchangeRate(baseCurrency);
+
+      }
 
       if (exchangeRate !== null) {
         // Auto-fill the exchange rate input field
@@ -125,8 +137,6 @@ async function autoFillExchangeRate() {
 
         // Populate the payment and receive account dropdowns for transfer type
         if (transactionType === 'transfer') {
-          const paymentAccountSelect = document.getElementById('paymentAccount');
-          const receiveAccountSelect = document.getElementById('receiveAccount');
           const exchangeRatePayInput = document.getElementById('exchangeRatePay');
           const exchangeRateReceiveInput = document.getElementById('exchangeRateReceive');
 
@@ -142,10 +152,6 @@ async function autoFillExchangeRate() {
             paymentAccountSelect.add(option.cloneNode(true));
             receiveAccountSelect.add(option);
           });
-
-          // Auto-fill exchange rates for payment and receive accounts
-          const selectedPaymentAccount = paymentAccountSelect.value;
-          const selectedReceiveAccount = receiveAccountSelect.value;
 
           // Set the same exchange rate for payment and receive accounts
           exchangeRatePayInput.value = exchangeRate.toFixed(4);
@@ -209,7 +215,6 @@ async function displayWalletData() {
   const userData = await getUserInfo();
   const walletItems = userData.walletItems || [];
   displayUserStocks();
-
 
   // Define sections with corresponding IDs and types
   const sections = [
@@ -401,21 +406,22 @@ async function handleTransactionSubmit(event) {
     event.preventDefault();
     const type = getSelectedType();
     const account = document.getElementById('account').value;
-    const beforeAmount = document.getElementById('amount').value;
+    let amount = document.getElementById('amount').value;
     const currency = document.getElementById('currency').value;
-    const exchangeRate = document.getElementById('exchangeRate');
-    exchangeRate = parseFloat(exchangeRate.textContent);
-    console.log(exchangeRate)
+    const exchangeRate = document.getElementById('exchangeRate').value;
     const notes = document.getElementById('notes').value;
     const transactionDateTime = document.getElementById('transactionDateTime').value;
-    const amount = beforeAmount*exchangeRate;
-    amount = parseFloat(amount);
-    console.log(amount)
+    if (exchangeRate > 0) {
+      amount = amount*exchangeRate;
+    }
     const receiveCurrency = document.getElementById('exchangeRateReceive').value;
-    receiveCurrency = parseFloat(receiveCurrency.textContent);
-    const amountInReceiveCurrency = amount / receiveCurrency;
-    console.log(amountInReceiveCurrency)
-    
+    let amountInReceiveCurrency = amount
+    console.log(amountInReceiveCurrency);
+    if (receiveCurrency > 0) {
+      amountInReceiveCurrency = amount / receiveCurrency;
+    }
+    console.log(amountInReceiveCurrency);
+
     // Get additional fields based on the transaction type
     let additionalFields = {};
     if (type === 'transfer') {
@@ -427,8 +433,6 @@ async function handleTransactionSubmit(event) {
         receiveAccount: document.getElementById('receiveAccount').value,
       };
     }
-
-    
 
     // Prepare the data to be sent to the server
     const transactionData = {
@@ -446,7 +450,7 @@ async function handleTransactionSubmit(event) {
     const userId = userData._id;
 
     // Make a POST request to the server to handle the transaction
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/submitTransaction`, {
+    const response = await fetch(`${url}/submitTransaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -476,7 +480,7 @@ async function handleTransactionSubmit(event) {
       } else {
         errorMessageElement.textContent = `Error: ${result.error || 'Unknown error'}`;
       }
-      errorMessageElement.classList.remove('hidden'); // error\
+      errorMessageElement.classList.remove('hidden');
     }
   } catch (error) {
     console.error('Error handling transaction submit:', error);

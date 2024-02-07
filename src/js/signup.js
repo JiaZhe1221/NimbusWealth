@@ -1,3 +1,5 @@
+let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com";
+
 // Function to toggle password visibility
 function togglePasswordVisibility(inputId, toggleIconId) {
     const passwordInput = document.getElementById(inputId);
@@ -99,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   userData[key] = value;
               });
 
-              const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/signup', {
+              const response = await fetch(`${url}/signup`, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
+let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/";
 
 function getUserData() {
   const userDataString = localStorage.getItem('userData');
@@ -19,7 +20,7 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
+    const response = await fetch(`${url}/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
@@ -383,7 +384,7 @@ const handleBuyButtonClick = async () => {
         const stockPrice = parseFloat(stockPriceText.replace(/[^0-9.-]+/g, ''));
 
         // Make a request to the server to buy stocks
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/buyStocks', {
+        const response = await fetch(`${url}/buyStocks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

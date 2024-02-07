@@ -93,7 +93,7 @@
  
   <div id="mobile" class="overflow-x-hidden">
     <div id="mobile" class="block md:hidden">
-      <div id="mobileNav" class="flex md:hidden absolute top-full flex-wrap items-center justify-between mx-auto p-4 w-full mt-10 z-50">
+      <div id="mobileNav" class="flex md:hidden absolute top-full flex-wrap items-center justify-between mx-auto p-4 w-full mt-6 z-50">
         <a href="https://jiazhe1221.github.io/skystudios/" class="flex items-center cursor-pointer">
             <!-- Logo -->
             <img src="../resources/navbar/Sky Studios.png" class="h-6 ml-1 mr-4" alt="Sky Studios Logo" />
@@ -268,11 +268,15 @@
         document.getElementById('mobileNav').classList.add('fixed');
         document.getElementById('body').classList.remove('overflow-hidden', 'fixed')
 
-  
-        // Delay for 2 seconds (2000 milliseconds) before setting nav to fixed
+        let offset = 5; 
+
+        if (window.innerWidth <= 768) {
+          // If the window width is 768 pixels or less (common for mobile devices)
+          offset = 10; // Adjust offset for mobile devices
+        }
+
         setTimeout(() => {
-          const offset = 5; // Adjust this value as needed
-          window.scrollTo({ top: mainHeader.offsetHeight - offset, behavior: 'smooth' });          
+          window.scrollTo({ top: mainHeader.offsetHeight - offset, behavior: 'smooth' });
         }, 300);
         setTimeout(() => {
 
