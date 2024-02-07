@@ -69,16 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
             password: passwordInput ? passwordInput.value : null,
           }),
         });
-        const modal = document.getElementById('modal');
-        if (modal) {
-          modal.classList.add('md:hidden');
-          setTimeout(() => {
-              const loading = document.getElementById('loading');
-              if (loading) {
-                  loading.classList.remove('hidden');
-              }
-          }, 8000);
-
         if (response.ok) {
           const responseData = await response.json();
           if (responseData.success) {
@@ -109,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         } else {
-          // Add red border to corresponding input fields
           if (response.status === 400 && usernameInput) {
             errorMessageElement.classList.remove('hidden');
             errorMessageElement.textContent = 'Username not found';
@@ -121,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordInput.classList.add('error-border');
             usernameInput.classList.remove('error-border');
           } else {
-            // Clear borders if the error is not related to username or password
             if (usernameInput) {
               usernameInput.classList.remove('error-border');
             }
@@ -131,9 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       } 
-    } catch (error) {
-        // Handle other errors (e.g., network issues)
-        // Optionally display an error message to the user
+     catch (error) {
         if (errorMessageElement) {
           errorMessageElement.classList.remove('hidden');
           errorMessageElement.textContent = 'An error occurred. Please try again later.';
