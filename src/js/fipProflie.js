@@ -709,6 +709,7 @@ if (claimBonus) {
         const dailyModal = document.getElementById('dailyLoginModal');
         if (dailyModal) {
             dailyModal.classList.add('hidden');
+            location.reload(); 
         }
 
         
