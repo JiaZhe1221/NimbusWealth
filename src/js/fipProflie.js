@@ -704,14 +704,7 @@ const claimBonus = document.getElementById('claimBonusBtn');
 
 if (claimBonus) {
     claimBonus.addEventListener('click', async () => {
-
         await afterLogin();
-        const dailyModal = document.getElementById('dailyLoginModal');
-        if (dailyModal) {
-            dailyModal.classList.add('hidden');
-        }
-
-        
     });
 }
 
