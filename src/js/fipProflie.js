@@ -598,7 +598,7 @@ async function sellStock(stockDetails, sellAmount) {
                     ...userData
                 });
 
-                location.reload();
+                location.reload
             } else {
                 console.log('exist');
                 alert('You cannot sell more shares than you own.');
@@ -654,11 +654,8 @@ async function afterLogin() {
             const data = await response.json();
 
             // Update the added currency amount in the modal
-            const bonusAmountSpan = document.getElementById('bonusAmount');
-            if (bonusAmountSpan) {
-                bonusAmountSpan.textContent = `$${data.addedCurrency}`;
-            }
-
+            addedCurrencyAmountSpan.textContent = `$${data.addedCurrency}`;
+            
             // Show the claim message
             const claimMessage = document.getElementById('claimMessage');
             if (claimMessage) {
@@ -700,12 +697,14 @@ const claimBonus = document.getElementById('claimBonusBtn');
 
 if (claimBonus) {
     claimBonus.addEventListener('click', async () => {
+
+        await afterLogin();
         const dailyModal = document.getElementById('dailyLoginModal');
         if (dailyModal) {
             dailyModal.classList.add('hidden');
         }
 
-        await afterLogin();
+        
     });
 }
 
