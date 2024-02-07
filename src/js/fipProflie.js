@@ -123,7 +123,7 @@ async function calculateTotalUnrealizedReturn(userData) {
 
     // Calculate total unrealized return for all stocks
     const totalUnrealizedReturn = stocksOwn.reduce((total, stock) => {
-        const currentStockPrice = stockPrices[stock.symbol];
+        const currentStockPrice = stockPrices//[stock.symbol];
         const unrealizedReturn = (currentStockPrice - stock.avgCost) * stock.shares;
         return total + unrealizedReturn;
     }, 0);
