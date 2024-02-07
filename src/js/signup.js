@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   userData[key] = value;
               });
 
-              const response = await fetch('https://fathomless-sea-15492.herokuapp.com/signup', {
+              const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/signup', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
