@@ -155,9 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   }
               }
           } catch (error) {
+              alert('Internal server error. Please try again later.')
               console.error('Error during registration:', error);
-              // Handle other errors (e.g., network issues)
-              // Optionally display an error message to the user
+
           }
       });
   } else {

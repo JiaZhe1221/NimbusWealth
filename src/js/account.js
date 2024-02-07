@@ -859,6 +859,8 @@ async function getUserFIPAmount() {
         const userInfo = await getUserInfo();
         const userId = userInfo._id;
         const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getFIPAmount?userId=${userId}`, {
+
+    
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
