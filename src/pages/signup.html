@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="../css/signin.css">
     <script src="../js/app.js" defer></script>
 	<script src="../js/signup.js" defer></script>
+	<script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
 	<link rel="icon" href="../resources/icon/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="../resources/icon/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="../resources/icon/favicon-32x32.ico">
@@ -24,7 +25,7 @@
 </head>
 <body>
 
-  <div class="hidden md:block">
+  <div id="modal" class="hidden md:block">
 	<button onclick="goBack()" class="go-back-button">Back</button>
 
 	<div class="container w-max">
@@ -66,6 +67,11 @@
 		</form>
 	</div>
   </div>
+
+  <div id='loading' class="hidden">
+	<dotlottie-player src="https://lottie.host/e2cb1ac4-ee70-45f2-bd16-52fa0cd56f8d/260MJdfw6H.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+  </div>
+
   <div class="block md:hidden font-sans bg-white dark:bg-black">
     <div class="flex flex-col items-center justify-center h-screen">
       <p class="text-lg text-center text-gray-800 dark:text-gray-200">

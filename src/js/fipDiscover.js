@@ -13,17 +13,17 @@ async function fetchAndUpdateLocalVariable() {
     const userInfo = await getUserData();
 
     if (!userInfo || !userInfo._id) {
-      alert('Invalid user info or user ID not found.');
+
       return;
     }
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
+    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
 
     
     if (!response.ok) {
-      alert(`Error: Server returned status ${response.status}`);
+
       return;
     }
 
@@ -35,7 +35,7 @@ async function fetchAndUpdateLocalVariable() {
     if (userData && userData.user) {
       userDataFromMongoDB = userData.user;
     } else {
-      alert('No userData.userData found in the response:', userData);
+
     }
 
     // Use the cloned response for subsequent processing
@@ -213,11 +213,13 @@ const showError = (content) => {
 };
 
 const openModal = (content) => {
+    const loading = document.getElementById('loadingStock');
     const modal = document.getElementById('stockModal');
     const modalContent = document.getElementById('modalContent');
     const modalWidth = '400px';
     const modalHeight = '300px';
 
+    loading.classList.add('hidden');
     modalContent.innerHTML = content;
     modalContent.style.width = modalWidth;
     modalContent.style.height = modalHeight;
@@ -381,7 +383,7 @@ const handleBuyButtonClick = async () => {
         const stockPrice = parseFloat(stockPriceText.replace(/[^0-9.-]+/g, ''));
 
         // Make a request to the server to buy stocks
-        const response = await fetch('https://fathomless-sea-15492.herokuapp.com/buyStocks', {
+        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/buyStocks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -427,6 +429,7 @@ document.getElementById('searchForm').addEventListener('submit', (event) => {
 document.addEventListener('click', (event) => {
     const stockCard = event.target.closest('.stock-card');
     if (stockCard) {
+        
         const symbol = stockCard.dataset.symbol;
         searchStock(symbol);
     }

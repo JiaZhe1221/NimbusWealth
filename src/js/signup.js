@@ -110,7 +110,16 @@ document.addEventListener('DOMContentLoaded', () => {
               if (response.ok) {
                   // Store username in sessionStorage 
                   sessionStorage.setItem('userData', JSON.stringify({ username: userData.username }));
-
+                  const modal = document.getElementById('modal');
+                  if (modal) {
+                    modal.classList.add('md:hidden');
+                    setTimeout(() => {
+                        const loading = document.getElementById('loading');
+                        if (loading) {
+                            loading.classList.remove('hidden');
+                        }
+                    }, 8000);
+                  }
                   // Redirect to login page upon successful registration and auto fill the username for user
                   window.location.href = `login.html?username=${encodeURIComponent(userData.username)}`;
 

@@ -67,10 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
             password: passwordInput ? passwordInput.value : null,
           }),
         });
+        const modal = document.getElementById('modal');
+        if (modal) {
+          modal.classList.add('md:hidden');
+          setTimeout(() => {
+              const loading = document.getElementById('loading');
+              if (loading) {
+                  loading.classList.remove('hidden');
+              }
+          }, 8000);
 
         if (response.ok) {
           const responseData = await response.json();
-          console.log(responseData)
           if (responseData.success) {
             const userData = responseData.userData;
 
@@ -92,13 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Dispatch a custom event indicating successful login
             const loginEvent = new Event('loginSuccess');
             document.dispatchEvent(loginEvent);
-        
-            // Store a flag in local storage to indicate that the user is logged in
-        
-            // Wait for a short duration before redirecting to allow the event and local storage update to be processed
+
             setTimeout(() => {
               window.location.href = 'home.html'
-            }, 100); // Adjust the timeout duration as needed
+          }, 1000);
         }
 
         } else {
@@ -123,9 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         }
-      } catch (error) {
-        console.error('Error during login:', error);
-
+      } 
+    } catch (error) {
         // Handle other errors (e.g., network issues)
         // Optionally display an error message to the user
         if (errorMessageElement) {

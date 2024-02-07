@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="../css/style.css">
   <script src="../js/app.js" defer></script>
   <script src="../js/planning.js" defer></script>
+  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
   <link rel="icon" href="../resources/icon/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="../resources/icon/favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="../resources/icon/favicon-32x32.ico">
@@ -24,7 +26,10 @@
 
 </head>
 <body class="bg-white dark:bg-black">
- <div class="hidden md:block">
+  <div id="animation" class="flex h-screen m-0 items-center justify-center">
+    <dotlottie-player src="https://lottie.host/b8def71c-88b7-4e5f-9c8f-4de910bb4fb5/nhZCsyMSD5.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+  </div>
+ <div id="hiddenDiv" class="hidden">
   <nav class="maintxt">
     <div class="flex flex-wrap items-center justify-between mx-auto p-4">
       <a href="https://jiazhe1221.github.io/skystudios/" class="flex items-center space-x- rtl:space-x-reverse cursor-pointer">

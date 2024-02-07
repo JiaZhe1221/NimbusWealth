@@ -13,7 +13,7 @@ async function fetchAndUpdateLocalVariable() {
     const userInfo = await getUserData();
 
     if (!userInfo || !userInfo._id) {
-      window.location.href = 'login.html'; // Corrected redirection
+      window.location.href = 'login.html';
       return;
     }
 
@@ -818,6 +818,24 @@ async function displayUserStocks() {
     console.error('Error in displayUserStocks:', error);
   }
 }
+
+const animationPlayer = document.getElementById('animation');
+const hiddenDiv = document.getElementById('hiddenDiv');
+
+// Show the animation initially
+if (animationPlayer) {
+    animationPlayer.style.display = 'flex';
+}
+
+setTimeout(() => {
+    if (animationPlayer) {
+        animationPlayer.style.display = 'none';
+    }
+
+    if (hiddenDiv) {
+        hiddenDiv.classList.add('md:block');
+    }
+}, 6000);
 
 
 // Handle wallet box click

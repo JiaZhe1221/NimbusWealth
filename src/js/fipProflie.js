@@ -1,4 +1,5 @@
 let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
+const apiUrl = 'https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com';
 
 function getUserData() {
   const userDataString = localStorage.getItem('userData');
@@ -19,7 +20,7 @@ async function fetchAndUpdateLocalVariable() {
   
       const userId = userInfo._id.toString();
   
-      const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
+      const response = await fetch(`${apiUrl}/getUserData?userId=${userId}`);
   
       
       if (!response.ok) {
@@ -574,7 +575,7 @@ async function sellStock(stockDetails, sellAmount) {
                 
 
                 // Update the user's data on the server
-                const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/sellStocks?userId=${userId}`, {
+                const response = await fetch(`${apiUrl}m/sellStocks?userId=${userId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -629,18 +630,42 @@ async function fetchDataAndDisplay() {
 }
 
 
-async function afterLogin() {
-    const userInfo = await getUserData();
-      userId = userInfo._id;
-      // Make a request to the server to update the last login date
-      const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/updateLastLogin?userId=${userId}`, {
+
+async function updateLastLogin(userId) {
+    const response = await fetch(`${apiUrl}/updateLastLogin?userId=${userId}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userId }),
-      });
-      location.reload();
+    });
+    return response.ok;
+}
+
+async function afterLogin() {
+    const userInfo = await getUserData();
+    const userId = userInfo._id;
+    const success = await updateLastLogin(userId);
+
+    if (success) {
+        const addedCurrencyAmountSpan = document.getElementById('addedCurrencyAmount');
+        if (addedCurrencyAmountSpan) {
+            const response = await fetch(`${apiUrl}/getAddedCurrency?userId=${userId}`);
+            const data = await response.json();
+
+            // Update the added currency amount in the modal
+            addedCurrencyAmountSpan.textContent = `$${data.addedCurrency}`;
+            
+            // Show the claim message
+            const claimMessage = document.getElementById('claimMessage');
+            if (claimMessage) {
+                claimMessage.classList.remove('hidden');
+            }
+
+            // Reload the page or perform other actions as needed
+            location.reload();
+        }
+    }
 }
 
 function showPopupLogIn() {
@@ -650,11 +675,10 @@ function showPopupLogIn() {
     }
 }
 
-
 async function checkDailyLogin() {
-    const userInfo = await getUserData(); 
-    const userId = userInfo._id
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getLastLogin?userId=${userId}`);
+    const userInfo = await getUserData();
+    const userId = userInfo._id;
+    const response = await fetch(`${apiUrl}/getLastLogin?userId=${userId}`);
     const data = await response.json();
 
     const lastLoginDate = new Date(data.lastLogin) || [];
@@ -669,18 +693,19 @@ async function checkDailyLogin() {
     }
 }
 
-
-
 const claimBonus = document.getElementById('claimBonusBtn');
 
 if (claimBonus) {
-    claimBonus.addEventListener("click", async () => {
-        console.log('h')
+    claimBonus.addEventListener('click', async () => {
         const dailyModal = document.getElementById('dailyLoginModal');
-        dailyModal.classList.add('hidden');
-        afterLogin();
+        if (dailyModal) {
+            dailyModal.classList.add('hidden');
+        }
+
+        await afterLogin();
     });
 }
+
 
 
 const apiKey = 'cmu8s39r01qsv99m4llgcmu8s39r01qsv99m4lm0';
