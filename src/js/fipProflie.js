@@ -128,7 +128,7 @@ async function calculateTotalUnrealizedReturn(userData) {
         return total + unrealizedReturn;
     }, 0);
 
-    return StockPrices;
+    return totalUnrealizedReturn;
 }
 
 
