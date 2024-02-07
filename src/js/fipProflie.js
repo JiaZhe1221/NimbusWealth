@@ -665,7 +665,12 @@ async function afterLogin() {
             if (claimMessage) {
                 claimMessage.classList.remove('hidden');
             }
-            location.reload();
+
+            setTimeout(() => {
+                location.reload();    
+            }, 3000);
+                
+            
         }
     }
 }
