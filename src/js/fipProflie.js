@@ -639,20 +639,24 @@ async function updateLastLogin(userId) {
         },
         body: JSON.stringify({ userId }),
     });
-    return response.ok;
+
+    if (response.ok) {
+        const responseData = await response.json();
+        return responseData.randomCurrency;
+    } else {
+
+        return null;
+    }
 }
 
 async function afterLogin() {
     const userInfo = await getUserData();
     const userId = userInfo._id;
-    const success = await updateLastLogin(userId);
+    const data = await updateLastLogin(userId);
 
-    if (success) {
+    if (data) {
         const addedCurrencyAmountSpan = document.getElementById('addedCurrencyAmount');
         if (addedCurrencyAmountSpan) {
-            const response = await fetch(`${apiUrl}/getAddedCurrency?userId=${userId}`);
-            const data = await response.json();
-
             // Update the added currency amount in the modal
             addedCurrencyAmountSpan.textContent = `$${data.addedCurrency}`;
             
@@ -661,8 +665,6 @@ async function afterLogin() {
             if (claimMessage) {
                 claimMessage.classList.remove('hidden');
             }
-
-            // Reload the page or perform other actions as needed
             location.reload();
         }
     }
