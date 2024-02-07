@@ -51,7 +51,7 @@ if (isLoggedIn) {
 
   if (getStartedButton) {
     getStartedButton.style.display = 'none';
-    getStartedButtonoverview.classList.add('hidden')
+    getStartedButtonoverview.classList.add('md:hidden')
   }
   if (profileIconContainer) {
     profileIconContainer.style.display = 'block';
