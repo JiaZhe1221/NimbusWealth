@@ -659,6 +659,7 @@ async function afterLogin() {
         if (addedCurrencyAmountSpan) {
             // Update the added currency amount in the modal
             addedCurrencyAmountSpan.textContent = `$${data.addedCurrency}`;
+            console.log(data.addedCurrency)
             
             // Show the claim message
             const claimMessage = document.getElementById('claimMessage');
