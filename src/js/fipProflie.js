@@ -114,19 +114,19 @@ async function calculateTotalUnrealizedReturn(userData) {
     }
 
     // Example usage: for testting purpose delete before using
-    const symbolsToTest = ['AAPL', 'GOOGL', 'TSLA'];
-    const StockPrices = generateFakeStockPrices(symbolsToTest);
+    //const symbolsToTest = ['AAPL', 'GOOGL', 'TSLA'];
+    //const StockPrices = generateFakeStockPrices(symbolsToTest);
     
     // Fetch real-time stock prices for symbols in stocksOwn
-    //const symbols = stocksOwn.map(stock => stock.symbol);
-    //const stockPrices = await fetchRealTimeStockPrices(symbols);
+    const symbols = stocksOwn.map(stock => stock.symbol);
+    const stockPrices = await fetchRealTimeStockPrices(symbols);
 
     // Calculate total unrealized return for all stocks
-    //const totalUnrealizedReturn = stocksOwn.reduce((total, stock) => {
-    //    const currentStockPrice = stockPrices[stock.symbol];
-    //    const unrealizedReturn = (currentStockPrice - stock.avgCost) * stock.shares;
-    //    return total + unrealizedReturn;
-    //}, 0);
+    const totalUnrealizedReturn = stocksOwn.reduce((total, stock) => {
+        const currentStockPrice = stockPrices[stock.symbol];
+        const unrealizedReturn = (currentStockPrice - stock.avgCost) * stock.shares;
+        return total + unrealizedReturn;
+    }, 0);
 
     return StockPrices;
 }
