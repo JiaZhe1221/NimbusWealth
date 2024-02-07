@@ -405,13 +405,16 @@ async function handleTransactionSubmit(event) {
     const currency = document.getElementById('currency').value;
     const exchangeRate = document.getElementById('exchangeRate');
     exchangeRate = parseFloat(exchangeRate.textContent);
+    console.log(exchangeRate)
     const notes = document.getElementById('notes').value;
     const transactionDateTime = document.getElementById('transactionDateTime').value;
     const amount = beforeAmount*exchangeRate;
     amount = parseFloat(amount);
+    console.log(amount)
     const receiveCurrency = document.getElementById('exchangeRateReceive').value;
     receiveCurrency = parseFloat(receiveCurrency.textContent);
     const amountInReceiveCurrency = amount / receiveCurrency;
+    console.log(amountInReceiveCurrency)
     
     // Get additional fields based on the transaction type
     let additionalFields = {};
