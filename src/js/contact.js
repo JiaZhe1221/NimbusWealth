@@ -17,7 +17,7 @@ async function fetchAndUpdateLocalVariable() {
 
     const userId = userInfo._id.toString();
 
-    const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
+    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
 
     if (!response.ok) {
       return;

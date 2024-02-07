@@ -20,7 +20,7 @@ async function fetchAndUpdateLocalVariable() {
 
         const userId = userInfo._id.toString();
 
-        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getUserData?userId=${userId}`);
+        const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getUserData?userId=${userId}`);
 
         if (!response.ok) {
             alert(`Error: Server returned status ${response.status}`);
@@ -56,7 +56,7 @@ const fetchLeaderboard = async () => {
     try {
         const userInfo = await getUserInfo();
         const userId = userInfo._id;
-        const response = await fetch(`https://fathomless-sea-15492.herokuapp.com/getLeaderboard?userId=${userId}`, {
+        const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/getLeaderboard?userId=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
