@@ -1,5 +1,5 @@
 let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
-let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/";
+let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com";
 
 function getUserData() {
   const userDataString = localStorage.getItem('userData');
