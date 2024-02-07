@@ -543,6 +543,7 @@ async function handleFormSubmission(event) {
         if (isUnique) {
             // Make a request to update the email on the server
             await updateEmailOnServer(userId, email);
+            closeModal();
         } else {
             displayErrorMessage('Email already exists. Please choose a different email.');
             return;
@@ -551,10 +552,12 @@ async function handleFormSubmission(event) {
 
     if (birthdate) {
         await updateBirthdateOnServer(userId, birthdate);
+        closeModal();
     }
 
     if (currency) {
         await updateCurrencyOnServer(userId, currency);
+        closeModal();
 
     }
 
