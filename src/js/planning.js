@@ -476,7 +476,7 @@ async function handleTransactionSubmit(event) {
       } else {
         errorMessageElement.textContent = `Error: ${result.error || 'Unknown error'}`;
       }
-      errorMessageElement.classList.remove('hidden');
+      errorMessageElement.classList.remove('hidden'); // error\
     }
   } catch (error) {
     console.error('Error handling transaction submit:', error);
