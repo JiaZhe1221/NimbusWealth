@@ -575,7 +575,7 @@ async function sellStock(stockDetails, sellAmount) {
                 
 
                 // Update the user's data on the server
-                const response = await fetch(`${apiUrl}m/sellStocks?userId=${userId}`, {
+                const response = await fetch(`${apiUrl}/sellStocks?userId=${userId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
