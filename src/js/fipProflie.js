@@ -574,7 +574,7 @@ async function sellStock(stockDetails, sellAmount) {
                 
 
                 // Update the user's data on the server
-                const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/ellStocks?userId=${userId}`, {
+                const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/sellStocks?userId=${userId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

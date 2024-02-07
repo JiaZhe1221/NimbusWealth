@@ -440,7 +440,7 @@ async function handleTransactionSubmit(event) {
     const userId = userData._id;
 
     // Make a POST request to the server to handle the transaction
-    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/ubmitTransaction`, {
+    const response = await fetch(`https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/submitTransaction`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

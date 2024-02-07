@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/ignin', {
+        const response = await fetch('https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com/signin', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
