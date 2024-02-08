@@ -1,4 +1,4 @@
-let userDataFromMongoDB; // Variable to store user data fetched from MongoDB
+let userDataFromMongoDB;
 let url = "https://fathomless-sea-15492-2df622b6f7c8.herokuapp.com"
 
 
@@ -877,12 +877,14 @@ async function getUserFIPAmount() {
         }
 
         const responsed = await response.json();
-        const fipAmount = responsed.stockCurrency;
-        if (fipAmount != number) {
+        const fipAmount = parseFloat(responsed.stockCurrency);
+
+        if (typeof fipAmount === 'number') {
             updateFIPAmountUI(null);
         }
-        updateFIPAmountUI(fipAmount); 
+        updateFIPAmountUI(fipAmount);
     } catch (error) {
+        console.log(error)
         updateFIPAmountUI(null);
     }
 }
@@ -893,7 +895,7 @@ function updateFIPAmountUI(amount) {
     if (fipAmountElement) {
         fipAmountElement.innerHTML = `
             <p class="text-xl font-semibold text-gray-900 dark:text-white p-1">FIP amount</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 pl-1">FIP total amount: ${amount !== null ? amount : 'null'}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 pl-1">FIP total amount: $${amount !== null ? amount : 'null'}</p>
         `;
     }
 }
