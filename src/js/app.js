@@ -91,7 +91,7 @@ if (isLoggedIn) {
     accountSidebar.classList.remove('hidden');
   }
   if (getStartedButtonoverview) {
-    getStartedButtonoverview.classList.remove('hidden');
+    getStartedButtonoverview.classList.add('hidden');
   }
 
 }
