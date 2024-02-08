@@ -73,7 +73,8 @@ if (isLoggedIn) {
   const profileIconContainer = document.getElementById('profile-icon-container');
   const accountSidebar = document.getElementById('account-sidebar');
   const mobilegetStarted = document.getElementById('mobileGetStartedBtn')
-
+  const getStartedButtonoverview = document.getElementById('getStartedBtnhomeoverview');
+  
   if (getStartedBtnoverview) {
     getStartedBtnoverview.classList.add('hidden');
   }
@@ -88,6 +89,9 @@ if (isLoggedIn) {
   }
   if (accountSidebar) {
     accountSidebar.classList.remove('hidden');
+  }
+  if (getStartedButtonoverview) {
+    getStartedButtonoverview.classList.remove('hidden');
   }
 
 }
