@@ -91,7 +91,7 @@ if (isLoggedIn) {
     accountSidebar.classList.remove('hidden');
   }
   if (getStartedButtonoverview) {
-    getStartedButtonoverview.classList.add('hidden');
+    getStartedButtonoverview.classList.remove('md:inline-flex');
   }
 
 }
