@@ -85,7 +85,7 @@ const fetchLeaderboard = async () => {
                 ${index + 1 === currentUserRank ? '👑' : ''} ${index + 1}
                 </td>
                 <td class="py-2 text-center">${player.username}</td>
-                <td class="py-2 text-center">${player.score}</td>
+                <td class="py-2 text-center">${player.score.toFixed(2)}</td>
             `;
             const isCurrentUser = player.username === userInfo.username;
 
