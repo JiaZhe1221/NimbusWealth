@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Dispatch a custom event indicating successful login
             const loginEvent = new Event('loginSuccess');
             document.dispatchEvent(loginEvent);
-
             setTimeout(() => {
               window.location.href = 'home.html'
           }, 1000);

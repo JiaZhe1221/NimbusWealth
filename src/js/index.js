@@ -13,6 +13,14 @@ if (getstartedhome) {
   });
 }
 
+const mobileGetStartedBtn = document.getElementById('mobileGetStartedBtn');
+
+if (mobileGetStartedBtn) {
+  mobileGetStartedBtn.addEventListener('click', function() {
+    window.location.href = 'src/pages/signup.html'; 
+  });
+}
+
 const getstartedbtn = document.getElementById('getStartedBtnhomeoverview')
 
 if (getstartedbtn) {
@@ -46,7 +54,7 @@ if (isLoggedIn) {
   const profileIconContainer = document.getElementById('profile-icon-container');
   const getStartedButtonoverview = document.getElementById('getStartedBtnhomeoverview');
   const accountSidebar = document.getElementById('account-sidebar');
-  const mobilegetStarted = document.getElementById('mobileGetStartedBtn')
+  const mobileDownload = document.getElementById('mobileDownload');
 
 
   if (getStartedButton) {
@@ -59,8 +67,11 @@ if (isLoggedIn) {
   if (accountSidebar) {
     accountSidebar.classList.remove('hidden');
   }
-  if (mobilegetStarted) {
-    mobilegetStarted.classList.add('hidden');
+  if (mobileGetStartedBtn) {
+    mobileGetStartedBtn.classList.add('hidden');
+  }
+  if (mobileDownload) {
+    mobileDownload.classList.remove('hidden');
   }
 }
 
@@ -72,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileNavToggle = document.getElementById('mobileNavToggle');
   const sidebar = document.getElementById('sidebar');
   const body = document.body;
-  const mobilegetStarted = document.getElementById('mobileGetStartedBtn');
+  const mobilegetStarted = document.getElementById('mobileDownload');
   const downloadApp = document.getElementById('downloadAPP');
 
   if (mobileNavToggle && sidebar) {

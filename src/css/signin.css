@@ -223,3 +223,16 @@ p {
 strong {
   color: #0070f3; /* Blue color for strong text */
 }
+
+@media (max-width: 768px){
+  .popup {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: max-content;
+    text-align: left;
+    overflow-y: auto; 
+    max-height: 80%;
+  }
+
+}

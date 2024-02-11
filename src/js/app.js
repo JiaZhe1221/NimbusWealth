@@ -40,6 +40,14 @@ if (getStartedBtnoverview) {
   })
 }
 
+const mobileGetStartedBtn = document.getElementById('mobileGetStartedBtn');
+
+if (mobileGetStartedBtn) {
+  mobileGetStartedBtn.addEventListener('click', function() {
+    window.location.href = 'signup.html'; 
+  });
+}
+
 const getstarted = document.getElementById('getStartedBtn')
 
 if (getstarted) {
@@ -72,14 +80,16 @@ if (isLoggedIn) {
   const getStartedButton = document.getElementById('getStartedBtn');
   const profileIconContainer = document.getElementById('profile-icon-container');
   const accountSidebar = document.getElementById('account-sidebar');
-  const mobilegetStarted = document.getElementById('mobileGetStartedBtn')
+  const mobileGetStartedBtn = document.getElementById('mobileGetStartedBtn')
   const getStartedButtonoverview = document.getElementById('getStartedBtnhomeoverview');
+  const mobileDownload = document.getElementById('mobileDownload');
+
   
   if (getStartedBtnoverview) {
     getStartedBtnoverview.classList.add('hidden');
   }
-  if (mobilegetStarted) {
-    mobilegetStarted.classList.add('hidden');
+  if (mobileGetStartedBtn) {
+    mobileGetStartedBtn.classList.add('hidden');
   }
   if (getStartedButton) {
     getStartedButton.classList.add('hidden');
@@ -92,6 +102,9 @@ if (isLoggedIn) {
   }
   if (getStartedButtonoverview) {
     getStartedButtonoverview.classList.remove('md:inline-flex');
+  }
+  if (mobileDownload) {
+    mobileDownload.classList.remove('hidden');
   }
 
 }
@@ -107,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileNavToggle = document.getElementById('mobileNavToggle');
   const sidebar = document.getElementById('sidebar');
   const body = document.body;
-  const mobilegetStarted = document.getElementById('mobileGetStartedBtn');
+  const mobilegetStarted = document.getElementById('mobileDownload');
   const downloadApp = document.getElementById('downloadAPP');
 
   if (mobileNavToggle && sidebar) {
