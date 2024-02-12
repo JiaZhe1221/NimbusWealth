@@ -127,3 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+function showErrorMessage() {
+  document.getElementById("errorMessage").style.display = "block";
+}

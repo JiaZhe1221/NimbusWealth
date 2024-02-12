@@ -36,7 +36,7 @@ const getStartedBtnoverview = document.getElementById('getStartedBtnhomeoverview
 
 if (getStartedBtnoverview) {
   getStartedBtnoverview.addEventListener('click', function(){
-    window.location.href = 'signup.html'
+    window.location.href = 'login.html'
   })
 }
 
@@ -44,7 +44,7 @@ const mobileGetStartedBtn = document.getElementById('mobileGetStartedBtn');
 
 if (mobileGetStartedBtn) {
   mobileGetStartedBtn.addEventListener('click', function() {
-    window.location.href = 'signup.html'; 
+    window.location.href = 'login.html'; 
   });
 }
 
@@ -53,7 +53,7 @@ const getstarted = document.getElementById('getStartedBtn')
 if (getstarted) {
   getstarted.addEventListener('click', function() {
     console.log('click')
-    window.location.href = 'signup.html'; 
+    window.location.href = 'login.html'; 
   });
 }
 

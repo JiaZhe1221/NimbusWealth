@@ -14,7 +14,7 @@ async function fetchAndUpdateLocalVariable() {
       const userInfo = await getUserData();
   
       if (!userInfo || !userInfo._id) {
-        window.location.href = 'login.html'; // Corrected redirection
+        window.location.href = 'login.html';
         return;
       }
   
