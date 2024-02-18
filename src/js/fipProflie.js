@@ -77,7 +77,7 @@ async function displayFinancialInformation(userData) {
 
     // Display and style total unrealized return
     totalUnrealisedReturn.textContent = formatNumber(unrealizedReturn);
-    totalUnrealisedReturn.style.color = unrealizedReturn >= 0 ? 'green' : 'red';
+    totalUnrealisedReturn.style.color = unrealizedReturn > 0 ? 'green' : unrealizedReturn < 0 ? 'red' : 'white';
 
     // Display and style total return
     totalReturnElement.textContent = formatNumber(totalReturn);
